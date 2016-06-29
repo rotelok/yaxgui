@@ -2,7 +2,7 @@ YaxGUI (Yet another xhprof GUI)
 =========
 
 This is a graphical front end designed to store and present the profiling information provided by the tideways Extension.
-This XHGUI will only support tideways because all other extensions will not be updated to run with PHP7.
+YaxGUI will only support tideways because all other extensions will not be updated to run with PHP7 (yet).
 
 * uprofiler: https://github.com/FriendsOfPHP/uprofiler/issues/28
 * xhprof: no statement yet
