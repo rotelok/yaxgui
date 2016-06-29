@@ -1,4 +1,4 @@
-XHGUI (XHProf UI)
+YaxGUI (Yet another xhprof GUI)
 =========
 
 This is a graphical front end designed to store and present the profiling information provided by the tideways Extension.
