@@ -112,17 +112,17 @@ unset($ignoreDomains);
 unset($domain);
 
 //Display warning if extension not available
-if (extension_loaded('xhprof') && $_xhprof['doprofile'] === true) {
+if (extension_loaded('tideways') && $_xhprof['doprofile'] === true) {
     include_once dirname(__FILE__) . '/../xhprof_lib/utils/xhprof_lib.php';
     include_once dirname(__FILE__) . '/../xhprof_lib/utils/xhprof_runs.php';
     if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
-        xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY, array('ignored_functions' => $ignoredFunctions));
+        tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
     } else {
-        xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+        tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY);
     }
-}elseif(!extension_loaded('xhprof') && $_xhprof['display'] === true)
+}elseif(!extension_loaded('tideways') && $_xhprof['display'] === true)
 {
-    $message = 'Warning! Unable to profile run, xhprof extension not loaded';
+    $message = 'Warning! Unable to profile run, tideways extension not loaded';
     trigger_error($message, E_USER_WARNING);
 }
 
