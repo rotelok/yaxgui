@@ -1,31 +1,17 @@
 -- This document is as yet incomplete --
 
-0. Install the XHProf extension for PHP
-
-  cd ./xhprof/extension/
-  phpize
-  ./configure --with-php-config=/usr/bin/php-config
-  make
-  make test
-  make install
-
-1. Once you have XHProf installed, you should enable it. Open your php.ini and add
-
-  [xhprof]
-  extension=xhprof.so
-
-2. Extract everything into a directory somewhere
-3. Copy xhprof_lib/config.sample.php to xhprof_lib/config.php 
-4. Edit xhprof_lib/config.php with your database type and credentials. Set control IPs, and other fun stuff
+1. Extract everything into a directory somewhere
+2. Copy xhprof_lib/config.sample.php to xhprof_lib/config.php
+3. Edit xhprof_lib/config.php with your database type and credentials. Set control IPs, and other fun stuff
     Control IPs allow you to specify which IPs will be shown the footer linking directly to the results, and also which IPs will be able to turn profiling on and off
     You can set this value to FALSE, which disables that protection all togethor.
-5. Create a table as required for your database, SQL is available inside utils/Db/<database of choice>.php. If you're prefixing runs IDs, note that it will affect the length requried for the ID column.
+4. Create a table as required for your database, SQL is available inside utils/Db/<database of choice>.php. If you're prefixing runs IDs, note that it will affect the length requried for the ID column.
 5. Load up index.php, ensure happiness
-7. Edit the virtual host configuration for the site you'd like to profile to 
+6. Edit the virtual host configuration for the site you'd like to profile to
     php_admin_value auto_prepend_file "<path>/external/header.php"
     Note for nginx users: http://www.justincarmony.com/blog/2012/04/23/php-fpm-nginx-php_value-and-multiple-values/
     You may add the auto_prepend_file directive to your php.ini file if you're interested in profiling every request the server handles. You may want to explicitly disable it for the XHGui system unless you're interested in profiling the profiler. 
-8. Bump your server, hope for the best
-9. Hitting a file with ?_profile=1 should profile the page, refresh XHGui to see it.
+7. Bump your server, hope for the best
+8. Hitting a file with ?_profile=1 should profile the page, refresh XHGui to see it.
 
 There's a decent blog post on setting this up, as well as tips on how to use it at: http://phpadvent.org/2010/profiling-with-xhgui-by-paul-reinheimer
