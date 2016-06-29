@@ -1,15 +1,23 @@
-XHProf UI
+XHGUI (XHProf UI)
 =========
 
-This is a graphical front end designed to store and present the profiling information provided by the Facebook created XHProf profiling tool.
+This is a graphical front end designed to store and present the profiling information provided by the tideways Extension (xhprof fork).
+This XHGUI will only support tideways because all other extensions will not be updated to run with PHP7.
+The fork I am now running will be changed step by step... So...
 
+I am working on
+-----------------
+
+* switch to PDO perhaps doctrine
+* Better UI (I think about [AdminLTE](https://github.com/almasaeed2010/AdminLTE) )
+* working with composer and bower
 
 Related Tools
 -------------
 
-* [XHGui](https://github.com/perftools/xhgui) - Uses MongoDB as a backend (rather than MySQL)
-* [XHProf.io](http://xhprof.io/) - Uses MySQL backend, more normalized storage schema 
-
+* [XHProf UI](https://github.com/preinheimer/xhprof) - Uses MySQL as a backend but only support xhprof and old ext-mysql
+* [XHGui](https://github.com/perftools/xhgui) - Uses MongoDB as a backend
+* [XHProf.io](http://xhprof.io/) - Uses MySQL backend, more normalized storage schema
 
 Project Includes
 ----------------
@@ -71,11 +79,3 @@ Installation
 * Visit http://your-server/xhprof/xhprof_html/ and be amazed!
  * To get profiler information showing up there visit your page with a `GET` variable `_profile=1`.
  * For example `http://localhost/?_profile=1`
-
-We Are Working On
------------------
-
-* The aggregation functionality is ignored completely
-* The code is... a mess. Deadlines do that to you, we're working on it
-* The default table schema isn't indexed all the places it needs to be
-* Easier ways to diff URLs
