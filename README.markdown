@@ -16,6 +16,7 @@ I am working on
 * Naming of methods/functions have xhprof (can be better...)
 * perhaps switch to doctrine
 * Better UI (I think about [AdminLTE](https://github.com/almasaeed2010/AdminLTE) )
+* Charts with [ChartJS](https://github.com/chartjs/Chart.js)
 * working with composer and bower packages
 
 Done
