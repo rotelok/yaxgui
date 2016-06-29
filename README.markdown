@@ -3,15 +3,20 @@ XHGUI (XHProf UI)
 
 This is a graphical front end designed to store and present the profiling information provided by the tideways Extension.
 This XHGUI will only support tideways because all other extensions will not be updated to run with PHP7.
+
+* uprofiler: https://github.com/FriendsOfPHP/uprofiler/issues/28
+* xhprof: no statement yet
+
+I took the preinheimer/xhprof and removed the extension because I only want a GUI with MySQL and PDO.
 The fork I am now running will be changed step by step... So...
 
 I am working on
 -----------------
 
 * Naming of methods/functions have xhprof (can be better...)
-* switch to PDO perhaps doctrine
+* perhaps switch to doctrine
 * Better UI (I think about [AdminLTE](https://github.com/almasaeed2010/AdminLTE) )
-* working with composer and bower
+* working with composer and bower packages
 
 Done
 ----
