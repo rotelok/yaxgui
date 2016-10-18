@@ -1,4 +1,8 @@
 <?php
+if (!defined('XHPROF_LIB_ROOT')) {
+    define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
+}
+
 if (PHP_SAPI == 'cli') {
   $_SERVER['REMOTE_ADDR'] = null;
   $_SERVER['HTTP_HOST'] = null;
@@ -6,7 +10,8 @@ if (PHP_SAPI == 'cli') {
   $_GET = $argv;
 }
 
-include(dirname(__FILE__) . '/../xhprof_lib/config.php');
+include(XHPROF_LIB_ROOT . '/config.php');
+
 
 //I'm Magic :)
 class visibilitator
@@ -114,8 +119,8 @@ unset($domain);
 
 //Display warning if extension not available
 if (extension_loaded('tideways') && $_xhprof['doprofile'] === true) {
-    include_once dirname(__FILE__) . '/../xhprof_lib/utils/xhprof_lib.php';
-    include_once dirname(__FILE__) . '/../xhprof_lib/utils/xhprof_runs.php';
+    include_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
+    include_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
     if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
         tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
     } else {
