@@ -14,6 +14,10 @@
 //  limitations under the License.
 //
 
+if (!defined('XHPROF_LIB_ROOT')) {
+    define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
+}
+
 /**
  *
  * A callgraph generator for XHProf.
@@ -28,17 +32,11 @@
  *
  * @author Changhao Jiang (cjiang@facebook.com)
  */
-require_once ("../xhprof_lib/config.php");
+require_once (XHPROF_LIB_ROOT . "/config.php");
 
 if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs))
 {
   die("You do not have permission to view this page.");
-}
-
-// by default assume that xhprof_html & xhprof_lib directories
-// are at the same level.
-if (!defined('XHPROF_LIB_ROOT')) {
-  define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
 }
 
 include_once XHPROF_LIB_ROOT . '/display/xhprof.php';
