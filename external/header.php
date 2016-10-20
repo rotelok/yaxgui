@@ -86,7 +86,7 @@ unset($exceptionPostURLs);
 if ($_xhprof['doprofile'] === false)
 {
     //Profile weighting, one in one hundred requests will be profiled without being specifically requested
-    if (rand(1, $weight) == 1)
+    if ($weight > 0 && rand(1, $weight) == 1)
     {
         $_xhprof['doprofile'] = true;
         $_xhprof['type'] = 0;
