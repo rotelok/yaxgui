@@ -65,7 +65,7 @@ Requirements
 
 Besides a simple PHP running on your favourite web server you will also need following packages:
 
-* [php-tideways](https://github.com/tideways/php-profiler-extension)
+* [tideways_xhprof](https://github.com/tideways/php-xhprof-extension)
 * php5-mysql
 * graphviz (uses `dot` to generate callgraphs)
 

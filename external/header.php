@@ -118,13 +118,23 @@ unset($ignoreDomains);
 unset($domain);
 
 //Display warning if extension not available
-if (extension_loaded('tideways') && $_xhprof['doprofile'] === true) {
+if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_xhprof['doprofile'] === true) {
     include_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
     include_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
-    if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
-        tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
-    } else {
-        tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY);
+    if(extension_loaded("tideways")) {
+        if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
+            tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
+        }
+        else {
+            tideways_enable( TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY);
+        }
+    }elseif(extension_loaded("tideways_xhprof")){
+        if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
+            tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
+        }
+        else {
+            tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY);
+        }
     }
 }elseif(!extension_loaded('tideways') && $_xhprof['display'] === true)
 {
@@ -143,9 +153,13 @@ function xhprof_shutdown_function() {
         $isAjax = true;
     }
 
-    if (extension_loaded('tideways') && $_xhprof['doprofile'] === true) {
+    if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_xhprof['doprofile'] === true) {
         $profiler_namespace = $_xhprof['namespace'];  // namespace for your application
-        $xhprof_data = tideways_disable();
+        if(extension_loaded("tideways")) {
+            $xhprof_data = tideways_disable();
+        }elseif(extension_loaded("tideways_xhprof")) {
+            $xhprof_data = tideways_xhprof_disable();
+        }
         $xhprof_runs = new XHProfRuns_Default();
         $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace, null, $_xhprof);
         if ($_xhprof['display'] === true && PHP_SAPI != 'cli' && !isset($isAjax))
