@@ -1,10 +1,14 @@
 <?php
 if (!defined('XHPROF_LIB_ROOT')) {
-  define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
+  define('XHPROF_LIB_ROOT', realpath(__DIR__ . '/../xhprof_lib'));
 }
-require_once (XHPROF_LIB_ROOT . "/config.php");
+
+if (XHPROF_LIB_ROOT === FALSE) {
+    die("XHPROF_LIB_ROOT directory does not exist");
+}
+require_once XHPROF_LIB_ROOT . "/config.php";
 include_once XHPROF_LIB_ROOT . '/display/xhprof.php';
-include (XHPROF_LIB_ROOT . "/utils/common.php");
+include XHPROF_LIB_ROOT . "/utils/common.php";
 
 if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs))
 {
