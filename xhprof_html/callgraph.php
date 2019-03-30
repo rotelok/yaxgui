@@ -13,9 +13,12 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-
 if (!defined('XHPROF_LIB_ROOT')) {
-    define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
+    define('XHPROF_LIB_ROOT', realpath(__DIR__ . '/../xhprof_lib'));
+}
+
+if (XHPROF_LIB_ROOT === FALSE) {
+    die("XHPROF_LIB_ROOT directory does not exist");
 }
 
 /**

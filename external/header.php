@@ -1,64 +1,60 @@
 <?php
 if (!defined('XHPROF_LIB_ROOT')) {
-    define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
+    define('XHPROF_LIB_ROOT', realpath(__DIR__  . '/../xhprof_lib'));
 }
 
-if (PHP_SAPI == 'cli') {
-  $_SERVER['REMOTE_ADDR'] = null;
-  $_SERVER['HTTP_HOST'] = null;
-  $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
-  $_GET = $argv;
+if (XHPROF_LIB_ROOT === FALSE) {
+    die("XHPROF_LIB_ROOT directory does not exist");
 }
 
-require XHPROF_LIB_ROOT . '/config.php';
+if (PHP_SAPI === 'cli') {
+    $_SERVER['REMOTE_ADDR'] = null;
+    $_SERVER['HTTP_HOST'] = null;
+    $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+    $_GET = $argv;
+}
+
+
+require_once XHPROF_LIB_ROOT . '/config.php';
 
 
 //I'm Magic :)
-class visibilitator
-{
-	public static function __callstatic($name, $arguments)
-	{
-		$func_name = array_shift($arguments);
-		//var_dump($name);
-		//var_dump("arguments" ,$arguments);
-		//var_dump($func_name);
-		if (is_array($func_name))
-		{
-			list($a, $b) = $func_name;
-			if (count($arguments) == 0)
-			{
-				$arguments = $arguments[0];
-			}
-			return call_user_func_array(array($a, $b), $arguments);
-			//echo "array call  -> $b ($arguments)";
-		}else {
-			call_user_func_array($func_name, $arguments);
-		}
-	}
+class visibilitator {
+    public static function __callstatic($name, $arguments) {
+        $func_name = array_shift($arguments);
+        if (is_array($func_name)) {
+            list($a, $b) = $func_name;
+            if (count($arguments) == 0) {
+                $arguments = $arguments[0];
+            }
+            return call_user_func_array(array($a, $b), $arguments);
+        }
+        call_user_func_array($func_name, $arguments);
+    }
 }
 
 // Only users from authorized IP addresses may control Profiling
 if ($controlIPs === false || in_array($_SERVER['REMOTE_ADDR'], $controlIPs) || PHP_SAPI == 'cli')
 {
-  if (isset($_GET['_profile']))
-  {
-    //Give them a cookie to hold status, and redirect back to the same page
-    setcookie('_profile', $_GET['_profile']);
-    $newURI = str_replace(array('_profile=1','_profile=0'), '', $_SERVER['REQUEST_URI']);
-    header("Location: $newURI");
-    exit;
-  }
+    if (isset($_GET['_profile']))
+    {
+        //Give them a cookie to hold status, and redirect back to the same page
+        setcookie('_profile', $_GET['_profile']);
+        $newURI = str_replace(array('_profile=1','_profile=0'), '', $_SERVER['REQUEST_URI']);
+        header("Location: $newURI");
+        exit;
+    }
 
-  if (isset($_COOKIE['_profile']) && $_COOKIE['_profile'] || PHP_SAPI == 'cli' && ((isset($_SERVER['XHPROF_PROFILE']) && $_SERVER['XHPROF_PROFILE']) || (isset($_ENV['XHPROF_PROFILE']) && $_ENV['XHPROF_PROFILE'])))
-  {
-      $_xhprof['display'] = true;
-      $_xhprof['doprofile'] = true;
-      $_xhprof['type'] = 1;
-  }
+    if (isset($_COOKIE['_profile']) && $_COOKIE['_profile'] || PHP_SAPI === 'cli' && ((isset($_SERVER['XHPROF_PROFILE']) && $_SERVER['XHPROF_PROFILE']) || (isset($_ENV['XHPROF_PROFILE']) && $_ENV['XHPROF_PROFILE'])))
+    {
+        $_xhprof['display'] = true;
+        $_xhprof['doprofile'] = true;
+        $_xhprof['type'] = 1;
+    }
 }
 
 
-//Certain URLs should never have a link displayed. Think images, xml, etc. 
+//Certain URLs should never have a link displayed. Think images, xml, etc.
 foreach($exceptionURLs as $url)
 {
     if (stripos($_SERVER['REQUEST_URI'], $url) !== FALSE)
@@ -66,7 +62,7 @@ foreach($exceptionURLs as $url)
         $_xhprof['display'] = false;
         header('X-XHProf-No-Display: Trueness');
         break;
-    }    
+    }
 }
 unset($exceptionURLs);
 
@@ -78,7 +74,7 @@ foreach ($exceptionPostURLs as $url)
     {
         $_xhprof['savepost'] = false;
         break;
-    }    
+    }
 }
 unset($exceptionPostURLs);
 
@@ -90,7 +86,7 @@ if ($_xhprof['doprofile'] === false)
     {
         $_xhprof['doprofile'] = true;
         $_xhprof['type'] = 0;
-    } 
+    }
 }
 unset($weight);
 
@@ -136,10 +132,14 @@ function xhprof_shutdown_function() {
     global $_xhprof;
 
     if (!defined('XHPROF_LIB_ROOT')) {
-        define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
+        define('XHPROF_LIB_ROOT', realpath(__DIR__  . '/../xhprof_lib'));
     }
 
-    if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    if (XHPROF_LIB_ROOT === FALSE) {
+        die("XHPROF_LIB_ROOT directory does not exist");
+    }
+
+    if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
         $isAjax = true;
     }
 
@@ -148,7 +148,7 @@ function xhprof_shutdown_function() {
         $xhprof_data = tideways_disable();
         $xhprof_runs = new XHProfRuns_Default();
         $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace, null, $_xhprof);
-        if ($_xhprof['display'] === true && PHP_SAPI != 'cli' && !isset($isAjax))
+        if ($_xhprof['display'] === true && PHP_SAPI !== 'cli' && !isset($isAjax))
         {
             // url to the XHProf UI libraries (change the host name and path)
             $profiler_url = sprintf($_xhprof['url'].'/index.php?run=%s&source=%s', $run_id, $profiler_namespace);

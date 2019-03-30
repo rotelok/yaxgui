@@ -27,10 +27,13 @@
 //
 // @author Kannan Muthukkaruppan
 //
-
 if (!defined('XHPROF_LIB_ROOT')) {
   // by default, the parent directory is XHPROF lib root
-  define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)));
+  define('XHPROF_LIB_ROOT', realpath(__DIR__ . "/../"));
+}
+
+if (XHPROF_LIB_ROOT === FALSE) {
+    die("XHPROF_LIB_ROOT directory does not exist");
 }
 
 require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
