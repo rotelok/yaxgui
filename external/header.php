@@ -10,7 +10,7 @@ if (PHP_SAPI == 'cli') {
   $_GET = $argv;
 }
 
-include(XHPROF_LIB_ROOT . '/config.php');
+require XHPROF_LIB_ROOT . '/config.php';
 
 
 //I'm Magic :)
@@ -119,8 +119,8 @@ unset($domain);
 
 //Display warning if extension not available
 if (extension_loaded('tideways') && $_xhprof['doprofile'] === true) {
-    include_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
-    include_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
+    require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
+    require_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
     if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
         tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
     } else {

@@ -33,9 +33,9 @@ if (!defined('XHPROF_LIB_ROOT')) {
   define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)));
 }
 
-include_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
-include_once XHPROF_LIB_ROOT . '/utils/callgraph_utils.php';
-include_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
+require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
+require_once XHPROF_LIB_ROOT . '/utils/callgraph_utils.php';
+require_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
 
 
 /**
@@ -154,40 +154,40 @@ function xhprof_render_link($content, $href, $class='', $id='', $title='',
   }
 
   if ($href) {
-    $link = '<a href="' . ($href) . '"';
+    $link = '<a href="' . $href . '"';
   } else {
     $link = '<span';
   }
 
   if ($class) {
-    $link .= ' class="' . ($class) . '"';
+    $link .= ' class="' . $class . '"';
   }
   if ($id) {
-    $link .= ' id="' . ($id) . '"';
+    $link .= ' id="' . $id . '"';
   }
   if ($title) {
-    $link .= ' title="' . ($title) . '"';
+    $link .= ' title="' . $title . '"';
   }
   if ($target) {
-    $link .= ' target="' . ($target) . '"';
+    $link .= ' target="' . $target . '"';
   }
   if ($onclick && $href) {
-    $link .= ' onclick="' . ($onclick) . '"';
+    $link .= ' onclick="' . $onclick . '"';
   }
   if ($style && $href) {
-    $link .= ' style="' . ($style) . '"';
+    $link .= ' style="' . $style . '"';
   }
   if ($access && $href) {
-    $link .= ' accesskey="' . ($access) . '"';
+    $link .= ' accesskey="' . $access . '"';
   }
   if ($onmouseover) {
-    $link .= ' onmouseover="' . ($onmouseover) . '"';
+    $link .= ' onmouseover="' . $onmouseover . '"';
   }
   if ($onmouseout) {
-    $link .= ' onmouseout="' . ($onmouseout) . '"';
+    $link .= ' onmouseout="' . $onmouseout . '"';
   }
   if ($onmousedown) {
-    $link .= ' onmousedown="' . ($onmousedown) . '"';
+    $link .= ' onmousedown="' . $onmousedown . '"';
   }
 
   $link .= '>';
@@ -651,7 +651,7 @@ function pct($a, $b) {
   if ($b == 0) {
     return "N/A";
   } else {
-    $res = (round(($a * 1000 / $b)) / 10);
+    $res = (round($a * 1000 / $b) / 10);
     return $res;
   }
 }
@@ -756,25 +756,25 @@ function print_function_info($url_params, $info, $sort, $run1, $run2) {
 
   if ($display_calls) {
     // Call Count..
-    print_td_num($info["ct"], $format_cbk["ct"], ($sort_col == "ct"));
-    print_td_pct($info["ct"], $totals["ct"], ($sort_col == "ct"));
+    print_td_num($info["ct"], $format_cbk["ct"], $sort_col == "ct");
+    print_td_pct($info["ct"], $totals["ct"], $sort_col == "ct");
   }
 
   // Other metrics..
   foreach ($metrics as $metric) {
     // Inclusive metric
     print_td_num($info[$metric], $format_cbk[$metric],
-                 ($sort_col == $metric));
+        $sort_col == $metric);
     print_td_pct($info[$metric], $totals[$metric],
-                 ($sort_col == $metric));
+        $sort_col == $metric);
 
     // Exclusive Metric
     print_td_num($info["excl_" . $metric],
                  $format_cbk["excl_" . $metric],
-                 ($sort_col == "excl_" . $metric));
+        $sort_col == "excl_" . $metric);
     print_td_pct($info["excl_" . $metric],
                  $totals[$metric],
-                 ($sort_col == "excl_" . $metric));
+        $sort_col == "excl_" . $metric);
   }
 
   print("</tr>\n");
@@ -821,8 +821,8 @@ function print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $
     }
   }
 
-  include(XHPROF_LIB_ROOT . "/templates/profChart.phtml");
-  include(XHPROF_LIB_ROOT . "/templates/profTable.phtml");
+  require XHPROF_LIB_ROOT . "/templates/profChart.phtml";
+  require XHPROF_LIB_ROOT . "/templates/profTable.phtml";
 
 }
 
@@ -858,11 +858,11 @@ function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links) {
 
   if ($diff_mode) {
       global $xhprof_runs_impl;
-      include XHPROF_LIB_ROOT . "/templates/diff_run_header_block.phtml";
+      require XHPROF_LIB_ROOT . "/templates/diff_run_header_block.phtml";
 
   } else {
       global $xhprof_runs_impl;
-      include XHPROF_LIB_ROOT . "/templates/single_run_header_block.phtml";
+      require XHPROF_LIB_ROOT . "/templates/single_run_header_block.phtml";
   }
   
   
@@ -937,16 +937,16 @@ function pc_info($info, $base_ct, $base_info, $parent) {
   if ($display_calls) {
     $mouseoverct = get_tooltip_attributes($type, "ct");
     /* call count */
-    print_td_num($info["ct"], $format_cbk["ct"], ($sort_col == "ct"), $mouseoverct);
-    print_td_pct($info["ct"], $base_ct, ($sort_col == "ct"), $mouseoverct);
+    print_td_num($info["ct"], $format_cbk["ct"], $sort_col == "ct", $mouseoverct);
+    print_td_pct($info["ct"], $base_ct, $sort_col == "ct", $mouseoverct);
   }
 
   /* Inclusive metric values  */
   foreach ($metrics as $metric) {
     print_td_num($info[$metric], $format_cbk[$metric],
-                 ($sort_col == $metric),
+        $sort_col == $metric,
                  get_tooltip_attributes($type, $metric));
-    print_td_pct($info[$metric], $base_info[$metric], ($sort_col == $metric),
+    print_td_pct($info[$metric], $base_info[$metric], $sort_col == $metric,
                  get_tooltip_attributes($type, $metric));
   }
 }
@@ -1166,8 +1166,8 @@ function symbol_report($url_params,
 
   // Inclusive Metrics for current function
   foreach ($metrics as $metric) {
-    print_td_num($symbol_info[$metric], $format_cbk[$metric], ($sort_col == $metric));
-    print_td_pct($symbol_info[$metric], $totals[$metric], ($sort_col == $metric));
+    print_td_num($symbol_info[$metric], $format_cbk[$metric], $sort_col == $metric);
+    print_td_pct($symbol_info[$metric], $totals[$metric], $sort_col == $metric);
   }
   print("</tr>");
 
@@ -1184,10 +1184,10 @@ function symbol_report($url_params,
   // Exclusive Metrics for current function
   foreach ($metrics as $metric) {
     print_td_num($symbol_info["excl_" . $metric], $format_cbk["excl_" . $metric],
-                 ($sort_col == $metric),
+        $sort_col == $metric,
                  get_tooltip_attributes("Child", $metric));
     print_td_pct($symbol_info["excl_" . $metric], $symbol_info[$metric],
-                 ($sort_col == $metric),
+        $sort_col == $metric,
                  get_tooltip_attributes("Child", $metric));
   }
   print("</tr>");
@@ -1204,7 +1204,7 @@ function symbol_report($url_params,
   }
   foreach ($run_data as $parent_child => $info) {
     list($parent, $child) = xhprof_parse_parent_child($parent_child);
-    if (($child == $rep_symbol) && ($parent)) {
+    if (($child == $rep_symbol) && $parent) {
       $info_tmp = $info;
       $info_tmp["fn"] = $parent;
       $results[] = $info_tmp;

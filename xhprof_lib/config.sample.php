@@ -87,7 +87,7 @@ unset($domain_weight);
       
       // For domain-specific configuration, you can use Apache setEnv xhprof_urlSimilartor_include [some_php_file]
       if($similartorinclude = getenv('xhprof_urlSimilartor_include')) {
-      	require_once($similartorinclude);
+      	require_once $similartorinclude;
       }
       
       $url = preg_replace("![?&]_profile=\d!", "", $url);
@@ -104,7 +104,7 @@ unset($domain_weight);
     // For domain-specific configuration, you can use Apache setEnv xhprof_aggregateCalls_include [some_php_file]
   	if(isset($run_details['aggregateCalls_include']) && strlen($run_details['aggregateCalls_include']) > 1)
 		{
-    	require_once($run_details['aggregateCalls_include']);
+    	require_once $run_details['aggregateCalls_include'];
 		}        
         
     $addIns = array();

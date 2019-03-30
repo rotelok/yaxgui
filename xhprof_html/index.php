@@ -2,9 +2,9 @@
 if (!defined('XHPROF_LIB_ROOT')) {
   define('XHPROF_LIB_ROOT', dirname(dirname(__FILE__)) . '/xhprof_lib');
 }
-require_once (XHPROF_LIB_ROOT . "/config.php");
-include_once XHPROF_LIB_ROOT . '/display/xhprof.php';
-include (XHPROF_LIB_ROOT . "/utils/common.php");
+require_once XHPROF_LIB_ROOT . "/config.php";
+require_once XHPROF_LIB_ROOT . '/display/xhprof.php';
+require XHPROF_LIB_ROOT . "/utils/common.php";
 
 if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs))
 {
@@ -80,12 +80,12 @@ if (!is_null($serverFilter))
 $_xh_header = "";
 if(isset($_GET['run1']) || isset($_GET['run']))
 {
-    include (XHPROF_LIB_ROOT . "/templates/header.phtml");
+    require XHPROF_LIB_ROOT . "/templates/header.phtml";
 	displayXHProfReport($xhprof_runs_impl, $params, $source, $run, $wts,
 	                    $symbol, $sort, $run1, $run2);	
 }elseif (isset($_GET['geturl']))
 {
-    $last = (isset($_GET['last'])) ?  $_GET['last'] : 100;
+    $last = isset($_GET['last']) ?  $_GET['last'] : 100;
     $last = (int) $last;
     $criteria['url'] = $_GET['geturl'];
     $criteria['limit'] = $last;
@@ -94,15 +94,15 @@ if(isset($_GET['run1']) || isset($_GET['run']))
     list($header, $body) = showChart($rs, true);
     $_xh_header .= $header;
     
-    include (XHPROF_LIB_ROOT . "/templates/header.phtml");
+    require XHPROF_LIB_ROOT . "/templates/header.phtml";
     $rs = $xhprof_runs_impl->getRuns($criteria);
-    include (XHPROF_LIB_ROOT . "/templates/emptyBody.phtml");
+    require XHPROF_LIB_ROOT . "/templates/emptyBody.phtml";
     
     $url = htmlentities($_GET['geturl'], ENT_QUOTES, "UTF-8");
     displayRuns($rs, "Runs with URL: $url");
 }elseif (isset($_GET['getcurl']))
 {
-    $last = (isset($_GET['last'])) ?  $_GET['last'] : 100;
+    $last = isset($_GET['last']) ?  $_GET['last'] : 100;
     $last = (int) $last;
     $criteria['c_url'] = $_GET['getcurl'];
     $criteria['limit'] = $last;
@@ -111,15 +111,15 @@ if(isset($_GET['run1']) || isset($_GET['run']))
     $rs = $xhprof_runs_impl->getUrlStats($criteria);
     list($header, $body) = showChart($rs, true);
     $_xh_header .= $header;
-    include (XHPROF_LIB_ROOT . "/templates/header.phtml");
+    require XHPROF_LIB_ROOT . "/templates/header.phtml";
     
     $url = htmlentities($_GET['getcurl'], ENT_QUOTES, "UTF-8");
     $rs = $xhprof_runs_impl->getRuns($criteria);
-    include(XHPROF_LIB_ROOT . "/templates/emptyBody.phtml");
+    require XHPROF_LIB_ROOT . "/templates/emptyBody.phtml";
     displayRuns($rs, "Runs with Simplified URL: $url");
 }elseif (isset($_GET['getruns']))
 {
-    include (XHPROF_LIB_ROOT . "/templates/header.phtml");
+    require XHPROF_LIB_ROOT . "/templates/header.phtml";
     $days = (int) $_GET['days'];
     
     switch ($_GET['getruns'])
@@ -142,10 +142,10 @@ if(isset($_GET['run1']) || isset($_GET['run']))
     displayRuns($rs, "Worst runs by $load");
 }elseif(isset($_GET['hit']))
 {
-    include (XHPROF_LIB_ROOT . "/templates/header.phtml");
-    $last = (isset($_GET['hit'])) ?  $_GET['hit'] : 25;
+    require XHPROF_LIB_ROOT . "/templates/header.phtml";
+    $last = isset($_GET['hit']) ?  $_GET['hit'] : 25;
     $last = (int) $last;
-    $days = (isset($_GET['days'])) ?  $_GET['days'] : 1;
+    $days = isset($_GET['days']) ?  $_GET['days'] : 1;
     $days = (int) $days;
     if (isset($_GET['type']) && ($_GET['type'] === 'url' OR $_GET['type'] = 'curl'))
     {
@@ -203,8 +203,8 @@ if(isset($_GET['run1']) || isset($_GET['run']))
 CODESE;
 }else 
 {
-    include (XHPROF_LIB_ROOT . "/templates/header.phtml");
-    $last = (isset($_GET['last'])) ?  $_GET['last'] : 25;
+    require XHPROF_LIB_ROOT . "/templates/header.phtml";
+    $last = isset($_GET['last']) ?  $_GET['last'] : 25;
     $last = (int) $last;
     $criteria['order by'] = "timestamp";
     $criteria['limit'] = $last;
@@ -212,4 +212,4 @@ CODESE;
     displayRuns($rs, "Last $last Runs");
 }
 
-include (XHPROF_LIB_ROOT . "/templates/footer.phtml");
+require XHPROF_LIB_ROOT . "/templates/footer.phtml";

@@ -95,7 +95,7 @@ function showChart($rs, $flip = false)
   
    
     ob_start();
-      require (XHPROF_LIB_ROOT . "/templates/chart.phtml");
+      require XHPROF_LIB_ROOT . "/templates/chart.phtml";
       $stuff = ob_get_contents();
     ob_end_clean();
    return array($stuff, "<div id=\"container\" style=\"width: 1000px; height: 500px; margin: 0 auto\"></div>");
@@ -113,7 +113,7 @@ function getFilter($filterName)
         setcookie($filterName, null, 0);
       }else
       {
-        setcookie($filterName, $_GET[$filterName], (time() + 60 * 60));
+        setcookie($filterName, $_GET[$filterName], time() + 60 * 60);
         $serverFilter = $_GET[$filterName];
       }
     }elseif(isset($_COOKIE[$filterName]))

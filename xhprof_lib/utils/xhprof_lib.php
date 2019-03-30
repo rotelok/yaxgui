@@ -134,7 +134,7 @@ function xhprof_valid_run($run_id, $raw_data) {
                    . serialize($info));
       return false;
     }
-    if ($val > (86400000000)) {
+    if ($val > 86400000000) {
       xhprof_error("XHProf: $metric > 1 day found in Run ID: $run_id "
                    . serialize($info));
       return false;
@@ -865,6 +865,6 @@ function xhprof_get_matching_functions($q, $xhprof_data) {
   // sort it so the answers are in some reliable order...
   asort($res);
 
-  return ($res);
+  return $res;
 }
 

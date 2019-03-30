@@ -157,7 +157,7 @@ allocated to PHP between each function's entry and exit. It also
 tracks increase/decrease in the amount of <b>peak</b> memory allocated to
 PHP for each function.
 
-<li>XHProf tracks <code>include, include_once, require and
+<li>XHProf tracks <code>include, require_once, require and
 require_once</code> operations as if they were functions. The name of
 the file being included is used to generate the name for these <a
 href="#include_funcs">"fake" functions</a>.
@@ -591,8 +591,8 @@ $xhprof_data = xhprof_disable();
 // Saving the XHProf run
 // using the default implementation of iXHProfRuns.
 //
-include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
-include_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
+require_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_lib.php";
+require_once $XHPROF_ROOT . "/xhprof_lib/utils/xhprof_runs.php";
 
 $xhprof_runs = new <b>XHProfRuns_Default()</b>;
 
