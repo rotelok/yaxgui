@@ -27,18 +27,10 @@
 //
 // @author Kannan Muthukkaruppan
 //
-if (!defined('XHPROF_LIB_ROOT')) {
-  // by default, the parent directory is XHPROF lib root
-  define('XHPROF_LIB_ROOT', realpath(__DIR__ . "/../"));
-}
 
-if (XHPROF_LIB_ROOT === FALSE) {
-    die("XHPROF_LIB_ROOT directory does not exist");
-}
-
-require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
-require_once XHPROF_LIB_ROOT . '/utils/callgraph_utils.php';
-require_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
+require_once __DIR__ . '/../utils/xhprof_lib.php';
+require_once __DIR__ . '/../utils/callgraph_utils.php';
+require_once __DIR__ . '/../utils/xhprof_runs.php';
 
 
 /**
@@ -824,8 +816,8 @@ function print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $
     }
   }
 
-  require XHPROF_LIB_ROOT . "/templates/profChart.phtml";
-  require XHPROF_LIB_ROOT . "/templates/profTable.phtml";
+  require __DIR__ . "/../templates/profChart.phtml";
+  require __DIR__ . "/../templates/profTable.phtml";
 
 }
 
@@ -861,11 +853,11 @@ function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links) {
 
   if ($diff_mode) {
       global $xhprof_runs_impl;
-      require XHPROF_LIB_ROOT . "/templates/diff_run_header_block.phtml";
+      require __DIR__ . "/../templates/diff_run_header_block.phtml";
 
   } else {
       global $xhprof_runs_impl;
-      require XHPROF_LIB_ROOT . "/templates/single_run_header_block.phtml";
+      require __DIR__ . "/../templates/single_run_header_block.phtml";
   }
   
   

@@ -13,13 +13,6 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-if (!defined('XHPROF_LIB_ROOT')) {
-    define('XHPROF_LIB_ROOT', realpath(__DIR__ . '/../xhprof_lib'));
-}
-
-if (XHPROF_LIB_ROOT === FALSE) {
-    die("XHPROF_LIB_ROOT directory does not exist");
-}
 
 /**
  *
@@ -35,14 +28,14 @@ if (XHPROF_LIB_ROOT === FALSE) {
  *
  * @author Changhao Jiang (cjiang@facebook.com)
  */
-require_once XHPROF_LIB_ROOT . "/config.php";
+require_once __DIR__ . "/../xhprof_lib/config.php";
 
 if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs))
 {
   die("You do not have permission to view this page.");
 }
 
-require_once XHPROF_LIB_ROOT . '/display/xhprof.php';
+require_once __DIR__ . '/../xhprof_lib/display/xhprof.php';
 
 ini_set('max_execution_time', 100);
 

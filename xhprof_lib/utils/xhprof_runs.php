@@ -87,7 +87,7 @@ class XHProfRuns_Default implements iXHProfRuns {
   protected function db()
   {
 	global $_xhprof;
-	require_once XHPROF_LIB_ROOT.'/utils/Db/'.$_xhprof['dbadapter'].'.php';
+	require_once __DIR__ .'/Db/'.$_xhprof['dbadapter'].'.php';
 	
     $class = self::getDbClass();
     $this->db = new $class($_xhprof);
@@ -102,38 +102,7 @@ class XHProfRuns_Default implements iXHProfRuns {
       return $class;
   }
   
-  /**
-  * When setting the `id` column, consider the length of the prefix you're specifying in $this->prefix
-  * 
-  *
-CREATE TABLE `details` (
-  `id` char(17) NOT NULL,
-  `url` varchar(255) default NULL,
-  `c_url` varchar(255) default NULL,
-  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `server name` varchar(64) default NULL,
-  `perfdata` MEDIUMBLOB,
-  `type` tinyint(4) default NULL,
-  `cookie` BLOB,
-  `post` BLOB,
-  `get` BLOB,
-  `pmu` int(11) unsigned default NULL,
-  `wt` int(11) unsigned default NULL,
-  `cpu` int(11) unsigned default NULL,
-  `server_id` char(3) NOT NULL default 't11',
-  `aggregateCalls_include` varchar(255) DEFAULT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `url` (`url`),
-  KEY `c_url` (`c_url`),
-  KEY `cpu` (`cpu`),
-  KEY `wt` (`wt`),
-  KEY `pmu` (`pmu`),
-  KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-  
-*/
 
-    
   private function gen_run_id($type) 
   {
     return uniqid();
@@ -378,30 +347,6 @@ CREATE TABLE `details` (
         if ($run_id === null) {
           $run_id = $this->gen_run_id($type);
         }
-        
-		/*
-		Session data is ommitted purposefully, mostly because it's not likely that the data
-		that resides in $_SESSION at this point is the same as the data that the application
-		started off with (for most apps, it's likely that session data is manipulated on most
-		pageloads).
-		
-		The goal of storing get, post and cookie is to help explain why an application chose
-		a particular code execution path, pehaps it was a poorly filled out form, or a cookie that
-		overwrote some default parameters. So having them helps. Most applications don't push data
-		back into those super globals, so we're safe(ish) storing them now. 
-		
-		We can't just clone the session data in header.php to be sneaky either, starting the session
-		is an application decision, and we don't want to go starting sessions where none are needed
-		(not good performance wise). We could be extra sneaky and do something like:
-		if(isset($_COOKIE['phpsessid']))
-		{
-			session_start();
-			$_xhprof['session_data'] = $_SESSION;
-		} 
-		but starting session support really feels like an application level decision, not one that
-		a supposedly unobtrusive profiler makes for you. 
-		
-		*/
 
 		if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] == 'php')) {
 			$sql['get'] = $this->db->escape(serialize($_GET));
@@ -435,7 +380,7 @@ CREATE TABLE `details` (
 
 		// The value of 2 seems to be light enugh that we're not killing the server, but still gives us lots of breathing room on 
 		// full production code. 
-		if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] == 'php')) {
+		if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] === 'php')) {
 			$sql['data'] = $this->db->escape(gzcompress(serialize($xhprof_data), 2));
 		} else {
 			$sql['data'] = $this->db->escape(gzcompress(json_encode($xhprof_data), 2));

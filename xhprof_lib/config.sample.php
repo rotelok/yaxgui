@@ -61,11 +61,9 @@ $controlIPs[] = "::1";         // localhost IP v6
 //Default weight - can be overidden by an Apache environment variable 'xhprof_weight' for domain-specific values
 $weight = 100;
 
-if($domain_weight = getenv('xhprof_weight')) {
-	$weight = $domain_weight;
+if(getenv('xhprof_weight')) {
+	$weight = getenv('xhprof_weight');
 }
-
-unset($domain_weight);
 
   /**
   * The goal of this function is to accept the URL for a resource, and return a "simplified" version
@@ -94,13 +92,14 @@ unset($domain_weight);
       return $url;
   }
   
-  function _aggregateCalls($calls, $rules = null)
+  function _aggregateCalls($calls, $rules = [])
   {
-    $rules = [
-        'Loading' => 'load::',
-        'mysql' => 'mysql_'
-    ];
-
+      if (!isset($rules["Loading"])) {
+          $rules['Loading'] = 'load::';
+      }
+      if (!isset($rules["mysql"])) {
+          $rules['mysql'] = 'mysql_';
+      }
     // For domain-specific configuration, you can use Apache setEnv xhprof_aggregateCalls_include [some_php_file]
   	if(isset($run_details['aggregateCalls_include']) && strlen($run_details['aggregateCalls_include']) > 1)
 		{

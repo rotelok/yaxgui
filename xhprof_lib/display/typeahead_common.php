@@ -25,7 +25,7 @@
  */
 
 
-require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
+require_once __DIR__  . '/../utils/xhprof_lib.php';
 
 // param name, its type, and default value
 $params = ['q'          => [XHPROF_STRING_PARAM, ''],

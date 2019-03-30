@@ -1,12 +1,4 @@
 <?php
-if (!defined('XHPROF_LIB_ROOT')) {
-    define('XHPROF_LIB_ROOT', realpath(__DIR__  . '/../xhprof_lib'));
-}
-
-if (XHPROF_LIB_ROOT === FALSE) {
-    die("XHPROF_LIB_ROOT directory does not exist");
-}
-
 if (PHP_SAPI === 'cli') {
     $_SERVER['REMOTE_ADDR'] = null;
     $_SERVER['HTTP_HOST'] = null;
@@ -15,7 +7,7 @@ if (PHP_SAPI === 'cli') {
 }
 
 
-require_once XHPROF_LIB_ROOT . '/config.php';
+require_once __DIR__ . '/../xhprof_lib/config.php';
 
 
 //I'm Magic :)
@@ -115,8 +107,8 @@ unset($domain);
 
 //Display warning if extension not available
 if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_xhprof['doprofile'] === true) {
-    require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
-    require_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
+    require_once __DIR__ . '/../xhprof_lib/utils/xhprof_lib.php';
+    require_once __DIR__ . '/../xhprof_lib/utils/xhprof_runs.php';
     if(extension_loaded("tideways")) {
         if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
             tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, ['ignored_functions' => $ignoredFunctions]);
@@ -140,15 +132,6 @@ if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_x
 
 function xhprof_shutdown_function() {
     global $_xhprof;
-
-    if (!defined('XHPROF_LIB_ROOT')) {
-        define('XHPROF_LIB_ROOT', realpath(__DIR__  . '/../xhprof_lib'));
-    }
-
-    if (XHPROF_LIB_ROOT === FALSE) {
-        die("XHPROF_LIB_ROOT directory does not exist");
-    }
-
     if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
         $isAjax = true;
     }
