@@ -58,6 +58,7 @@ function xhprof_http_header($name, $value) {
  * @author cjiang
  */
 function xhprof_generate_mime_header($type, $length) {
+  $mime = false;
   switch ($type) {
     case 'jpg':
       $mime = 'image/jpeg';
@@ -70,8 +71,7 @@ function xhprof_generate_mime_header($type, $length) {
       break;
     case 'ps':
       $mime = 'application/postscript';
-    default:
-      $mime = false;
+      break;
   }
 
   if ($mime) {
