@@ -1,0 +1,8 @@
+# You can put this repository in a subdomain public_html and this htaccess file will take
+# care of routing the urls to the xhprof_html folder
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} !^/xhprof_html/(.*)$
+    RewriteRule (.*) /xhprof_html/$1 [L]
+</IfModule>
