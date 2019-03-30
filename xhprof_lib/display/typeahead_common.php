@@ -28,12 +28,12 @@
 include_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
 
 // param name, its type, and default value
-$params = array('q'          => array(XHPROF_STRING_PARAM, ''),
-                'run'        => array(XHPROF_STRING_PARAM, ''),
-                'run1'       => array(XHPROF_STRING_PARAM, ''),
-                'run2'       => array(XHPROF_STRING_PARAM, ''),
-                'source'     => array(XHPROF_STRING_PARAM, 'xhprof'),
-                );
+$params = ['q'          => [XHPROF_STRING_PARAM, ''],
+                'run'        => [XHPROF_STRING_PARAM, ''],
+                'run1'       => [XHPROF_STRING_PARAM, ''],
+                'run2'       => [XHPROF_STRING_PARAM, ''],
+                'source'     => [XHPROF_STRING_PARAM, 'xhprof'],
+];
 
 // pull values of these params, and create named globals for each param
 xhprof_param_init($params);
@@ -58,14 +58,14 @@ if (!empty($run)) {
   asort($functions);
 } else {
   xhprof_error("no valid runs specified to typeahead endpoint");
-  $functions = array();
+  $functions = [];
 }
 
 // If exact match is present move it to the front
 if (in_array($q, $functions)) {
   $old_functions = $functions;
 
-  $functions = array($q);
+  $functions = [$q];
   foreach ($old_functions as $f) {
     // exact match case has already been added to the front
     if ($f != $q) {

@@ -21,12 +21,12 @@
  */
 
 // Supported ouput format
-$xhprof_legal_image_types = array(
+$xhprof_legal_image_types = [
     "jpg" => 1,
     "gif" => 1,
     "png" => 1,
     "ps"  => 1,
-    );
+];
 
 /**
  * Send an HTTP header with the response. You MUST use this function instead
@@ -111,18 +111,18 @@ function xhprof_generate_image_by_dot($dot_script, $type) {
   }
 
   // parts of the original source
-  $descriptorspec = array(
+  $descriptorspec = [
        // stdin is a pipe that the child will read from
-       0 => array("pipe", "r"),
+       0 => ["pipe", "r"],
        // stdout is a pipe that the child will write to
-       1 => array("pipe", "w"),
+       1 => ["pipe", "w"],
        // stderr is a file to write to
-       2 => array("file", $errorFile, "a")
-       );
+       2 => ["file", $errorFile, "a"]
+  ];
 
   $cmd = ' "'.$dotBinary.'" -T'.$type;
 
-  $process = proc_open($cmd, $descriptorspec, $pipes, $tmpDirectory, array());
+  $process = proc_open($cmd, $descriptorspec, $pipes, $tmpDirectory, []);
 
   if (is_resource($process)) {
     fwrite($pipes[0], $dot_script);
@@ -177,10 +177,10 @@ function xhprof_generate_image_by_dot_on_win($dot_script,
   $uid = md5(time());
 
   // files we handle with
-  $files = array(
+  $files = [
     'dot'   => $tmpDirectory.'\\'.$uid.'.dot',
     'img' => $tmpDirectory.'\\'.$uid.'.'.$type
-  );
+  ];
 
   // build command for dot.exe
   $cmd = '"'.$dotBin.'" -T'.$type.' "'.$files['dot'].'" -o "'.$files['img'].'"';
@@ -218,11 +218,11 @@ function xhprof_generate_image_by_dot_on_win($dot_script,
  * Get the children list of all nodes.
  */
 function xhprof_get_children_table($raw_data) {
-  $children_table = array();
+  $children_table = [];
   foreach ($raw_data as $parent_child => $info) {
     list($parent, $child) = xhprof_parse_parent_child($parent_child);
     if (!isset($children_table[$parent])) {
-      $children_table[$parent] = array($child);
+      $children_table[$parent] = [$child];
     } else {
       $children_table[$parent][] = $child;
     }
@@ -266,9 +266,9 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
   if ($critical_path) {
     $children_table = xhprof_get_children_table($raw_data);
     $node = "main()";
-    $path = array();
-    $path_edges = array();
-    $visited = array();
+    $path = [];
+    $path_edges = [];
+    $visited = [];
     while ($node) {
       $visited[$node] = true;
       if (isset($children_table[$node])) {
@@ -300,10 +300,10 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
   // if it is a benchmark callgraph, we make the benchmarked function the root.
  if ($source == "bm" && array_key_exists("main()", $sym_table)) {
     $total_times = $sym_table["main()"]["ct"];
-    $remove_funcs = array("main()",
+    $remove_funcs = ["main()",
                           "hotprofiler_disable",
                           "call_user_func_array",
-                          "xhprof_disable");
+                          "xhprof_disable"];
 
     foreach ($remove_funcs as $cur_del_func) {
       if (array_key_exists($cur_del_func, $sym_table) &&
@@ -315,7 +315,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
 
   // use the function to filter out irrelevant functions.
   if (!empty($func)) {
-    $interested_funcs = array();
+    $interested_funcs = [];
     foreach ($raw_data as $parent_child => $info) {
       list($parent, $child) = xhprof_parse_parent_child($parent_child);
       if ($parent == $func || $child == $func) {
