@@ -12,27 +12,21 @@ $_xhprof['servername'] = 'myserver';
 $_xhprof['namespace'] = 'myapp';
 $_xhprof['url'] = 'http://url/to/xhprof/xhprof_html';
 /*
- * MySQL/MySQLi/PDO ONLY
  * Switch to JSON for better performance and support for larger profiler data sets.
+ * Choices are 'php' or 'json'
  * WARNING: Will break with existing profile data, you will need to TRUNCATE the profile data table.
  */
-$_xhprof['serializer'] = 'php'; 
+$_xhprof['serializer'] = 'json';
 
-//Uncomment one of these, platform dependent. You may need to tune for your specific environment, but they're worth a try
-
-//These are good for Windows
-/*
-$_xhprof['dot_binary']  = 'C:\\Programme\\Graphviz\\bin\\dot.exe';
-$_xhprof['dot_tempdir'] = 'C:\\WINDOWS\\Temp';
-$_xhprof['dot_errfile'] = 'C:\\WINDOWS\\Temp\\xh_dot.err';
-*/
-
-//These are good for linux and its derivatives.
-/*
+// Default configuration values, should work on most linux distributions
 $_xhprof['dot_binary']  = '/usr/bin/dot';
-$_xhprof['dot_tempdir'] = '/tmp';
-$_xhprof['dot_errfile'] = '/tmp/xh_dot.err';
-*/
+$_xhprof['dot_tempdir'] = sys_get_temp_dir();
+$_xhprof['dot_errfile'] = sys_get_temp_dir().'/xh_dot.err';
+
+// Here you want you can override the default values:
+//$_xhprof['dot_binary']  = '';
+//$_xhprof['dot_tempdir'] = '';
+//$_xhprof['dot_errfile'] = '';
 
 $ignoreURLs = [];
 
@@ -48,7 +42,7 @@ $_xhprof['display'] = false;
 $_xhprof['doprofile'] = false;
 
 //Control IPs allow you to specify which IPs will be permitted to control when profiling is on or off within your application, and view the results via the UI.
-// $controlIPs = false; //Disables access controlls completely. 
+// $controlIPs = false; //Disables access controlls completely.
 $controlIPs = [];
 $controlIPs[] = "127.0.0.1";   // localhost, you'll want to add your own ip here
 $controlIPs[] = "::1";         // localhost IP v6
@@ -74,24 +68,24 @@ if(getenv('xhprof_weight')) {
   * worthwhile to consider them as identical. The script will store both the original URL and the
   * Simplified URL for display and comparison purposes. A good simplified URL would be:
   * http://example.org/stories.php?id=
-  * 
+  *
   * @param string $url The URL to be simplified
-  * @return string The simplified URL 
+  * @return string The simplified URL
   */
   function _urlSimilartor($url)
   {
-      //This is an example 
+      //This is an example
       $url = preg_replace("!\d{4}!", "", $url);
-      
+
       // For domain-specific configuration, you can use Apache setEnv xhprof_urlSimilartor_include [some_php_file]
       if($similartorinclude = getenv('xhprof_urlSimilartor_include')) {
       	require_once $similartorinclude;
       }
-      
+
       $url = preg_replace("![?&]_profile=\d!", "", $url);
       return $url;
   }
-  
+
   function _aggregateCalls($calls, $rules = [])
   {
       if (!isset($rules["Loading"])) {
@@ -104,8 +98,8 @@ if(getenv('xhprof_weight')) {
   	if(isset($run_details['aggregateCalls_include']) && strlen($run_details['aggregateCalls_include']) > 1)
 		{
     	require_once $run_details['aggregateCalls_include'];
-		}        
-        
+		}
+
     $addIns = [];
     foreach($calls as $index => $call)
     {
