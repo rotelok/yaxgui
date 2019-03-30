@@ -51,7 +51,7 @@ class Db_Sqlsrv extends Db_Abstract
     
     public function connect()
     {
-        $connectionInfo = array("UID" => $this->config['dbuser'], "PWD" =>  $this->config['dbpass'], "Database"=>$this->config['dbname'], "ReturnDatesAsStrings" => TRUE);
+        $connectionInfo = ["UID" => $this->config['dbuser'], "PWD" =>  $this->config['dbpass'], "Database"=>$this->config['dbname'], "ReturnDatesAsStrings" => TRUE];
         $linkid = sqlsrv_connect($this->config['dbhost'], $connectionInfo);
         if ($linkid === FALSE)
         {
@@ -64,7 +64,7 @@ class Db_Sqlsrv extends Db_Abstract
     
     public function query($sql)
     {
-        $this->curStmt = sqlsrv_prepare($this->linkID, $query, array());
+        $this->curStmt = sqlsrv_prepare($this->linkID, $query, []);
         return sqlsrv_execute($this->curStmt);
     }
     

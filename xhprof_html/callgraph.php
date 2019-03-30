@@ -46,33 +46,33 @@ require_once XHPROF_LIB_ROOT . '/display/xhprof.php';
 
 ini_set('max_execution_time', 100);
 
-$params = array(// run id param
-                'run' => array(XHPROF_STRING_PARAM, ''),
+$params = [// run id param
+                'run' => [XHPROF_STRING_PARAM, ''],
 
                 // source/namespace/type of run
-                'source' => array(XHPROF_STRING_PARAM, 'xhprof'),
+                'source' => [XHPROF_STRING_PARAM, 'xhprof'],
 
                 // the focus function, if it is set, only directly
                 // parents/children functions of it will be shown.
-                'func' => array(XHPROF_STRING_PARAM, ''),
+                'func' => [XHPROF_STRING_PARAM, ''],
 
                 // image type, can be 'jpg', 'gif', 'ps', 'png'
-                'type' => array(XHPROF_STRING_PARAM, 'png'),
+                'type' => [XHPROF_STRING_PARAM, 'png'],
 
                 // only functions whose exclusive time over the total time
                 // is larger than this threshold will be shown.
                 // default is 0.01.
-                'threshold' => array(XHPROF_FLOAT_PARAM, 0.01),
+                'threshold' => [XHPROF_FLOAT_PARAM, 0.01],
 
                 // whether to show critical_path
-                'critical' => array(XHPROF_BOOL_PARAM, true),
+                'critical' => [XHPROF_BOOL_PARAM, true],
 
                 // first run in diff mode.
-                'run1' => array(XHPROF_STRING_PARAM, ''),
+                'run1' => [XHPROF_STRING_PARAM, ''],
 
                 // second run in diff mode.
-                'run2' => array(XHPROF_STRING_PARAM, '')
-                );
+                'run2' => [XHPROF_STRING_PARAM, '']
+];
 
 // pull values of these params, and create named globals for each param
 xhprof_param_init($params);

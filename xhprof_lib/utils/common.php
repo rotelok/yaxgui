@@ -60,12 +60,12 @@ function showChart($rs, $flip = false)
 {
 
         $dataPoints = "";
-        $ids = array(); 
-        $arCPU = array();
-        $arWT = array();
-        $arPEAK = array();
-        $arIDS = array();
-        $arDateIDs = array();
+        $ids = [];
+        $arCPU = [];
+        $arWT = [];
+        $arPEAK = [];
+        $arIDS = [];
+        $arDateIDs = [];
     
          while($row = XHProfRuns_Default::getNextAssoc($rs))
         {
@@ -98,7 +98,7 @@ function showChart($rs, $flip = false)
       require XHPROF_LIB_ROOT . "/templates/chart.phtml";
       $stuff = ob_get_contents();
     ob_end_clean();
-   return array($stuff, "<div id=\"container\" style=\"width: 1000px; height: 500px; margin: 0 auto\"></div>");
+   return [$stuff, "<div id=\"container\" style=\"width: 1000px; height: 500px; margin: 0 auto\"></div>"];
 }
  
 

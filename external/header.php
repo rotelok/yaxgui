@@ -27,7 +27,7 @@ class visibilitator {
             if (count($arguments) == 0) {
                 $arguments = $arguments[0];
             }
-            return call_user_func_array(array($a, $b), $arguments);
+            return call_user_func_array([$a, $b], $arguments);
         }
         call_user_func_array($func_name, $arguments);
     }
@@ -40,7 +40,7 @@ if ($controlIPs === false || in_array($_SERVER['REMOTE_ADDR'], $controlIPs) || P
     {
         //Give them a cookie to hold status, and redirect back to the same page
         setcookie('_profile', $_GET['_profile']);
-        $newURI = str_replace(array('_profile=1','_profile=0'), '', $_SERVER['REQUEST_URI']);
+        $newURI = str_replace(['_profile=1','_profile=0'], '', $_SERVER['REQUEST_URI']);
         header("Location: $newURI");
         exit;
     }
@@ -118,7 +118,7 @@ if (extension_loaded('tideways') && $_xhprof['doprofile'] === true) {
     require_once XHPROF_LIB_ROOT . '/utils/xhprof_lib.php';
     require_once XHPROF_LIB_ROOT . '/utils/xhprof_runs.php';
     if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
-        tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
+        tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, ['ignored_functions' => $ignoredFunctions]);
     } else {
         tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY);
     }

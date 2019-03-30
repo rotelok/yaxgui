@@ -18,15 +18,15 @@ if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs))
 unset($controlIPs);
 
 // param name, its type, and default value
-$params = array('run'        => array(XHPROF_STRING_PARAM, ''),
-                'wts'        => array(XHPROF_STRING_PARAM, ''),
-                'symbol'     => array(XHPROF_STRING_PARAM, ''),
-                'sort'       => array(XHPROF_STRING_PARAM, 'wt'), // wall time
-                'run1'       => array(XHPROF_STRING_PARAM, ''),
-                'run2'       => array(XHPROF_STRING_PARAM, ''),
-                'source'     => array(XHPROF_STRING_PARAM, 'xhprof'),
-                'all'        => array(XHPROF_UINT_PARAM, 0),
-                );
+$params = ['run'        => [XHPROF_STRING_PARAM, ''],
+                'wts'        => [XHPROF_STRING_PARAM, ''],
+                'symbol'     => [XHPROF_STRING_PARAM, ''],
+                'sort'       => [XHPROF_STRING_PARAM, 'wt'], // wall time
+                'run1'       => [XHPROF_STRING_PARAM, ''],
+                'run2'       => [XHPROF_STRING_PARAM, ''],
+                'source'     => [XHPROF_STRING_PARAM, 'xhprof'],
+                'all'        => [XHPROF_UINT_PARAM, 0],
+];
 
 // pull values of these params, and create named globals for each param
 xhprof_param_init($params);
@@ -58,21 +58,21 @@ $xhprof_runs_impl = new XHProfRuns_Default();
 $domainFilter = getFilter('domain_filter');
 $serverFilter = getFilter('server_filter');
 
-$domainsRS = $xhprof_runs_impl->getDistinct(array('column' => 'server name'));
-$domainFilterOptions = array("None");
+$domainsRS = $xhprof_runs_impl->getDistinct(['column' => 'server name']);
+$domainFilterOptions = ["None"];
 while ($row = XHProfRuns_Default::getNextAssoc($domainsRS))
 {
 	$domainFilterOptions[] = $row['server name'];
 }
 
-$serverRS = $xhprof_runs_impl->getDistinct(array('column' => 'server_id'));
-$serverFilterOptions = array("None");
+$serverRS = $xhprof_runs_impl->getDistinct(['column' => 'server_id']);
+$serverFilterOptions = ["None"];
 while ($row = XHProfRuns_Default::getNextAssoc($serverRS))
 {
 	$serverFilterOptions[] = $row['server_id'];
 }
 
-$criteria = array();
+$criteria = [];
 if (!is_null($domainFilter))
 {
   $criteria['server name'] = $domainFilter;

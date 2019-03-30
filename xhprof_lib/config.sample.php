@@ -1,5 +1,5 @@
 <?php
-$_xhprof = array();
+$_xhprof = [];
 
 // Change these:
 $_xhprof['dbtype'] = 'mysql'; // Only relevant for PDO
@@ -34,13 +34,13 @@ $_xhprof['dot_tempdir'] = '/tmp';
 $_xhprof['dot_errfile'] = '/tmp/xh_dot.err';
 */
 
-$ignoreURLs = array();
+$ignoreURLs = [];
 
-$ignoreDomains = array();
+$ignoreDomains = [];
 
-$exceptionURLs = array();
+$exceptionURLs = [];
 
-$exceptionPostURLs = array();
+$exceptionPostURLs = [];
 $exceptionPostURLs[] = "login";
 
 
@@ -49,7 +49,7 @@ $_xhprof['doprofile'] = false;
 
 //Control IPs allow you to specify which IPs will be permitted to control when profiling is on or off within your application, and view the results via the UI.
 // $controlIPs = false; //Disables access controlls completely. 
-$controlIPs = array();
+$controlIPs = [];
 $controlIPs[] = "127.0.0.1";   // localhost, you'll want to add your own ip here
 $controlIPs[] = "::1";         // localhost IP v6
 
@@ -96,10 +96,10 @@ unset($domain_weight);
   
   function _aggregateCalls($calls, $rules = null)
   {
-    $rules = array(
+    $rules = [
         'Loading' => 'load::',
         'mysql' => 'mysql_'
-        );
+    ];
 
     // For domain-specific configuration, you can use Apache setEnv xhprof_aggregateCalls_include [some_php_file]
   	if(isset($run_details['aggregateCalls_include']) && strlen($run_details['aggregateCalls_include']) > 1)
@@ -107,7 +107,7 @@ unset($domain_weight);
     	require_once $run_details['aggregateCalls_include'];
 		}        
         
-    $addIns = array();
+    $addIns = [];
     foreach($calls as $index => $call)
     {
         foreach($rules as $rule => $search)

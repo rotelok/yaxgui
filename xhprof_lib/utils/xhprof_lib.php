@@ -31,13 +31,13 @@ function xhprof_error($message) {
  */
 function xhprof_get_possible_metrics() {
  static $possible_metrics =
-   array("wt" => array("Wall", "microsecs", "walltime" ),
-         "ut" => array("User", "microsecs", "user cpu time" ),
-         "st" => array("Sys", "microsecs", "system cpu time"),
-         "cpu" => array("Cpu", "microsecs", "cpu time"),
-         "mu" => array("MUse", "bytes", "memory usage"),
-         "pmu" => array("PMUse", "bytes", "peak memory usage"),
-         "samples" => array("Samples", "samples", "cpu time"));
+   ["wt" => ["Wall", "microsecs", "walltime"],
+         "ut" => ["User", "microsecs", "user cpu time"],
+         "st" => ["Sys", "microsecs", "system cpu time"],
+         "cpu" => ["Cpu", "microsecs", "cpu time"],
+         "mu" => ["MUse", "bytes", "memory usage"],
+         "pmu" => ["PMUse", "bytes", "peak memory usage"],
+         "samples" => ["Samples", "samples", "cpu time"]];
  return $possible_metrics;
 }
 
@@ -53,7 +53,7 @@ function xhprof_get_metrics($xhprof_data) {
 
   // return those that are present in the raw data.
   // We'll just look at the root of the subtree for this.
-  $metrics = array();
+  $metrics = [];
   foreach ($possible_metrics as $metric => $desc) {
     if (isset($xhprof_data["main()"][$metric])) {
       $metrics[] = $metric;
@@ -77,7 +77,7 @@ function xhprof_parse_parent_child($parent_child) {
     return $ret;
   }
 
-  return array(null, $ret[0]);
+  return [null, $ret[0]];
 }
 
 /**
@@ -170,7 +170,7 @@ function xhprof_trim_run($raw_data, $functions_to_keep) {
   // be computed if need be.
   $function_map['main()'] = 1;
 
-  $new_raw_data = array();
+  $new_raw_data = [];
   foreach ($raw_data as $parent_child => $info) {
     list($parent, $child) = xhprof_parse_parent_child($parent_child);
 
@@ -195,7 +195,7 @@ function xhprof_normalize_metrics($raw_data, $num_runs) {
     return $raw_data;
   }
 
-  $raw_data_total = array();
+  $raw_data_total = [];
 
   if (isset($raw_data["==>main()"]) && isset($raw_data["main()"])) {
     xhprof_error("XHProf Error: both ==>main() and main() set in raw data...");
@@ -247,18 +247,18 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
 
   $raw_data_total = null;
   $raw_data       = null;
-  $metrics        = array();
+  $metrics        = [];
 
   $run_count = count($runs);
   $wts_count = count($wts);
 
   if (($run_count == 0) ||
       (($wts_count > 0) && ($run_count != $wts_count))) {
-    return array('description' => 'Invalid input..',
-                 'raw'  => null);
+    return ['description' => 'Invalid input..',
+                 'raw'  => null];
   }
 
-  $bad_runs = array();
+  $bad_runs = [];
   foreach($runs as $idx => $run_id) {
 
     $raw_data = $xhprof_runs_impl->get_run($run_id, $source, $description);
@@ -381,7 +381,7 @@ function xhprof_compute_flat_info($raw_data, &$overall_totals) {
 
   $metrics = xhprof_get_metrics($raw_data);
 
-  $overall_totals = array( "ct" => 0,
+  $overall_totals = ["ct" => 0,
                            "wt" => 0,
                            "ut" => 0,
                            "st" => 0,
@@ -389,7 +389,7 @@ function xhprof_compute_flat_info($raw_data, &$overall_totals) {
                            "mu" => 0,
                            "pmu" => 0,
                            "samples" => 0
-                           );
+  ];
 
   // compute inclusive times for each function
   $symbol_tab = xhprof_compute_inclusive_times($raw_data);
@@ -452,9 +452,9 @@ function xhprof_compute_diff($xhprof_data1, $xhprof_data2) {
       // this pc combination was not present in run1;
       // initialize all values to zero.
       if ($display_calls) {
-        $xhprof_delta[$parent_child] = array("ct" => 0);
+        $xhprof_delta[$parent_child] = ["ct" => 0];
       } else {
-        $xhprof_delta[$parent_child] = array();
+        $xhprof_delta[$parent_child] = [];
       }
       foreach ($metrics as $metric) {
         $xhprof_delta[$parent_child][$metric] = 0;
@@ -493,7 +493,7 @@ function xhprof_compute_inclusive_times($raw_data) {
 
   $metrics = xhprof_get_metrics($raw_data);
 
-  $symbol_tab = array();
+  $symbol_tab = [];
 
   /*
    * First compute inclusive time for each function and total
@@ -517,9 +517,9 @@ function xhprof_compute_inclusive_times($raw_data) {
     if (!isset($symbol_tab[$child])) {
 
       if ($display_calls) {
-        $symbol_tab[$child] = array("ct" => $info["ct"]);
+        $symbol_tab[$child] = ["ct" => $info["ct"]];
       } else {
-        $symbol_tab[$child] = array();
+        $symbol_tab[$child] = [];
       }
       foreach ($metrics as $metric) {
         $symbol_tab[$child][$metric] = $info[$metric];
@@ -580,7 +580,7 @@ function xhprof_prune_run($raw_data, $prune_percent) {
   }
 
   // determine the metrics present in the raw data..
-  $metrics = array();
+  $metrics = [];
   foreach ($main_info as $metric => $val) {
     if (isset($val)) {
       $metrics[] = $metric;
@@ -848,7 +848,7 @@ function xhprof_param_init($params) {
  */
 function xhprof_get_matching_functions($q, $xhprof_data) {
 
-  $matches = array();
+  $matches = [];
 
   foreach ($xhprof_data as $parent_child => $info) {
     list($parent, $child) = xhprof_parse_parent_child($parent_child);

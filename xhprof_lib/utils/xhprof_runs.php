@@ -157,7 +157,7 @@ CREATE TABLE `details` (
         $query = "SELECT * FROM `details` ";
       }
       
-      $skippers = array("limit", "order by", "group by", "where", "select");
+      $skippers = ["limit", "order by", "group by", "where", "select"];
       $hasWhere = false;
       
       foreach($stats AS $column => $value)
@@ -267,7 +267,7 @@ CREATE TABLE `details` (
 
     // can't find specified data
     if (empty($data)) {
-        return array(null, null);
+        return [null, null];
     }
 
     //The Performance data is compressed lightly to avoid max row length
@@ -294,7 +294,7 @@ CREATE TABLE `details` (
     $run_desc = "XHProf Run (Namespace=$type)";
     $this->getRunComparativeData($data['url'], $data['c_url']);
     
-    return array($contents, $data);
+    return [$contents, $data];
   }
   
   /**
@@ -329,9 +329,9 @@ CREATE TABLE `details` (
       $row = $this->db->getNextAssoc($rs);
       $row['url'] = $url;
       
-      $row['95(`wt`)'] = $this->calculatePercentile(array('count' => $row['count(`id`)'], 'column' => 'wt', 'type' => 'url', 'url' => $url));
-      $row['95(`cpu`)'] = $this->calculatePercentile(array('count' => $row['count(`id`)'], 'column' => 'cpu', 'type' => 'url', 'url' => $url));
-      $row['95(`pmu`)'] = $this->calculatePercentile(array('count' => $row['count(`id`)'], 'column' => 'pmu', 'type' => 'url', 'url' => $url));
+      $row['95(`wt`)'] = $this->calculatePercentile(['count' => $row['count(`id`)'], 'column' => 'wt', 'type' => 'url', 'url' => $url]);
+      $row['95(`cpu`)'] = $this->calculatePercentile(['count' => $row['count(`id`)'], 'column' => 'cpu', 'type' => 'url', 'url' => $url]);
+      $row['95(`pmu`)'] = $this->calculatePercentile(['count' => $row['count(`id`)'], 'column' => 'pmu', 'type' => 'url', 'url' => $url]);
 
       global $comparative;
       $comparative['url'] = $row;
@@ -343,9 +343,9 @@ CREATE TABLE `details` (
       $rs = $this->db->query($query);
       $row = $this->db->getNextAssoc($rs);
       $row['url'] = $c_url;
-      $row['95(`wt`)'] = $this->calculatePercentile(array('count' => $row['count(`id`)'], 'column' => 'wt', 'type' => 'c_url', 'url' => $c_url));
-      $row['95(`cpu`)'] = $this->calculatePercentile(array('count' => $row['count(`id`)'], 'column' => 'cpu', 'type' => 'c_url', 'url' => $c_url));
-      $row['95(`pmu`)'] = $this->calculatePercentile(array('count' => $row['count(`id`)'], 'column' => 'pmu', 'type' => 'c_url', 'url' => $c_url));
+      $row['95(`wt`)'] = $this->calculatePercentile(['count' => $row['count(`id`)'], 'column' => 'wt', 'type' => 'c_url', 'url' => $c_url]);
+      $row['95(`cpu`)'] = $this->calculatePercentile(['count' => $row['count(`id`)'], 'column' => 'cpu', 'type' => 'c_url', 'url' => $c_url]);
+      $row['95(`pmu`)'] = $this->calculatePercentile(['count' => $row['count(`id`)'], 'column' => 'pmu', 'type' => 'c_url', 'url' => $c_url]);
 
       $comparative['c_url'] = $row;
       unset($row);
@@ -374,7 +374,7 @@ CREATE TABLE `details` (
     {
         global $_xhprof;
 
-		$sql = array();
+		$sql = [];
         if ($run_id === null) {
           $run_id = $this->gen_run_id($type);
         }
@@ -412,7 +412,7 @@ CREATE TABLE `details` (
 			{
 				$sql['post'] = $this->db->escape(serialize($_POST));
 			} else {
-				$sql['post'] = $this->db->escape(serialize(array("Skipped" => "Post data omitted by rule")));
+				$sql['post'] = $this->db->escape(serialize(["Skipped" => "Post data omitted by rule"]));
 			}
 		} else {
 			$sql['get'] = $this->db->escape(json_encode($_GET));
@@ -423,7 +423,7 @@ CREATE TABLE `details` (
 			{
 				$sql['post'] = $this->db->escape(json_encode($_POST));
 			} else {
-				$sql['post'] = $this->db->escape(json_encode(array("Skipped" => "Post data omitted by rule")));
+				$sql['post'] = $this->db->escape(json_encode(["Skipped" => "Post data omitted by rule"]));
 			}
 		}
         

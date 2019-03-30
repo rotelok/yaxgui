@@ -117,7 +117,7 @@ function xhprof_percent_format($s, $precision = 1) {
  * into a HTML list and returns the text.
  */
 function xhprof_render_actions($actions) {
-  $out = array( );
+  $out = [];
   $out[] = "<div>\n";
   if (count($actions)) {
     $out[] = "<ul class=\"xhprof_actions\">\n";
@@ -215,7 +215,7 @@ $diff_mode = false;
 $display_calls = true;
 
 // The following column headers are sortable
-$sortable_columns = array("fn" => 1,
+$sortable_columns = ["fn" => 1,
                           "ct" => 1,
                           "wt" => 1,
                           "excl_wt" => 1,
@@ -231,10 +231,10 @@ $sortable_columns = array("fn" => 1,
                           "excl_cpu" => 1,
                           "samples" => 1,
                           "excl_samples" => 1
-                          );
+];
 
 // Textual descriptions for column headers in "single run" mode
-$descriptions = array(
+$descriptions = [
                       "fn" => "Function Name",
                       "ct" =>  "Calls",
                       "Calls%" => "Calls%",
@@ -273,10 +273,10 @@ $descriptions = array(
                       "ISamples%" => "ISamples%",
                       "excl_samples" => "Excl. Samples",
                       "ESamples%" => "ESamples%",
-                      );
+];
 
 // Formatting Callback Functions...
-$format_cbk = array(
+$format_cbk = [
                       "fn" => "",
                       "ct" => "xhprof_count_format",
                       "Calls%" => "xhprof_percent_format",
@@ -315,11 +315,11 @@ $format_cbk = array(
                       "ISamples%" => "xhprof_percent_format",
                       "excl_samples" => "number_format",
                       "ESamples%" => "xhprof_percent_format",
-                      );
+];
 
 
 // Textual descriptions for column headers in "diff" mode
-$diff_descriptions = array(
+$diff_descriptions = [
                       "fn" => "Function Name",
                       "ct" =>  "Calls Diff",
                       "Calls%" => "Calls<br />Diff%",
@@ -358,13 +358,13 @@ $diff_descriptions = array(
                       "ISamples%" => "ISamples Diff%",
                       "excl_samples" => "Excl. Samples Diff",
                       "ESamples%" => "ESamples Diff%",
-                      );
+];
 
 // columns that'll be displayed in a top-level report
-$stats = array();
+$stats = [];
 
 // columns that'll be displayed in a function's parent/child report
-$pc_stats = array();
+$pc_stats = [];
 
 // Various total counts
 $totals = 0;
@@ -466,9 +466,9 @@ function init_metrics($xhprof_data, $rep_symbol, $sort, $diff_report = false) {
   }
 
   if ($display_calls) {
-    $stats = array("fn", "ct", "Calls%");
+    $stats = ["fn", "ct", "Calls%"];
   } else {
-    $stats = array("fn");
+    $stats = ["fn"];
   }
 
   $pc_stats = $stats;
@@ -526,7 +526,7 @@ function profiler_report ($url_params,
                           $run1_data,
                           $run2 = 0,
                           $run2_desc = "",
-                          $run2_data = array()) {
+                          $run2_data = []) {
   global $totals;
   global $totals_1;
   global $totals_2;
@@ -540,9 +540,9 @@ function profiler_report ($url_params,
   // That way compute_flat_info()/compute_diff() etc. do not have
   // to needlessly work hard on churning irrelevant data.
   if (!empty($rep_symbol)) {
-    $run1_data = xhprof_trim_run($run1_data, array($rep_symbol));
+    $run1_data = xhprof_trim_run($run1_data, [$rep_symbol]);
     if ($diff_mode) {
-      $run2_data = xhprof_trim_run($run2_data, array($rep_symbol));
+      $run2_data = xhprof_trim_run($run2_data, [$rep_symbol]);
     }
   }
 
@@ -585,7 +585,7 @@ function profiler_report ($url_params,
   }
 
   // set up the action links for operations that can be done on this report
-  $links = array();
+  $links = [];
 
 
   if ($diff_mode) {
@@ -812,7 +812,7 @@ function print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $
   usort($data_copy, 'sortWT');
   
   $iterations = 0;
-  $colors = array('#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92', '#EAFEBB', '#FEB4B1', '#2B6979', '#E9D6FE', '#FECDA3', '#FED980');
+  $colors = ['#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92', '#EAFEBB', '#FEB4B1', '#2B6979', '#E9D6FE', '#FECDA3', '#FED980'];
   foreach($data_copy as $datapoint)
   {
     if (++$iterations > 14)
@@ -872,7 +872,7 @@ function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links) {
   //echo xhprof_render_actions($links);
 
 
-  $flat_data = array();
+  $flat_data = [];
   foreach ($symbol_tab as $symbol => $info) {
     $tmp = $info;
     $tmp["fn"] = $symbol;
@@ -1196,7 +1196,7 @@ function symbol_report($url_params,
   print("</tr>");
 
   // list of callers/parent functions
-  $results = array();
+  $results = [];
   if ($display_calls) {
     $base_ct = $symbol_info["ct"];
   } else {
@@ -1221,7 +1221,7 @@ function symbol_report($url_params,
   }
 
   // list of callees/child functions
-  $results = array();
+  $results = [];
   $base_ct = 0;
   foreach ($run_data as $parent_child => $info) {
     list($parent, $child) = xhprof_parse_parent_child($parent_child);
