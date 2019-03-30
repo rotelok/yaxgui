@@ -1,62 +1,63 @@
-YaxGUI (Yet another xhprof GUI)
+YaxGUI-NG (Yet another xhprof GUI)
 =========
 
 This is a graphical front end designed to store and present the profiling information provided by the tideways Extension.
-YaxGUI will only support tideways because all other extensions will not be updated to run with PHP7 (yet).
+YaxGUI-NG only supports tideways because all other extensions seems to be abandoned.
 
-* uprofiler: https://github.com/FriendsOfPHP/uprofiler/issues/28
-* xhprof: no statement yet
+I forked the original sfeni/yaxgui that was a fork of preinheimer/xhprof itself a fork of of phacility/xhprof
+ my main objectives with this fork are:
+* Keep a cool tool alive
+* Modernization of the codebase 
+* Refactor it to a cleaner code style
+* Automate the creation of the Database Schema
+* Support for an easy to follow instalation guide both of this repository as the tideways_xhprof extension
+* Make It robust enought to use in a production enviroment
+* A Bonus low priority objective: Revamp the UI (I'm not a front-end guy, and the current UI is good enought for me)
 
-I took the preinheimer/xhprof and removed the extension because I only want a GUI with MySQL and PDO.
-The fork I am now running will be changed step by step... So...
 
-I am working on
+
+I am currently working on
 -----------------
 
-* Naming of methods/functions have xhprof (can be better...)
-* perhaps switch to doctrine
-* Better UI (I think about [AdminLTE](https://github.com/almasaeed2010/AdminLTE) )
-* Charts with [ChartJS](https://github.com/chartjs/Chart.js)
-* working with composer and bower packages
+* Cleaning up the code
+* Renaming of methods/functions
 
 Done
 ----
 
-* switch to ext-tideways
-
-Related Tools
--------------
-
-* [XHProf UI](https://github.com/preinheimer/xhprof) - Uses MySQL as a backend but only support xhprof and old ext-mysql
-* [XHGui](https://github.com/perftools/xhgui) - Uses MongoDB as a backend
-* [XHProf.io](http://xhprof.io/) - Uses MySQL backend, more normalized storage schema
+* update to the new tideways_xhprof extension ( tideways 5.0), but keeping compatibility with the older 
+tideways 4.0 extension
 
 Project Includes
 ----------------
 
-* It includes a header.php document you can use with PHP's 
-  auto\_prepend\_file directive. It sets up profiling by initilizing a few variables, and settting register_shutdown_function with the footer. Once started profiles are done 
-  when requested (?\_profile=1), or randomly. Profiled pages display a link to 
-  their profile results at the bottom of the page (this can be disabled on a 
-  blacklist based for specific documents. e.g. pages generating XML, images, 
-  etc.).
+* It includes a header.php document you can use with PHP's auto\_prepend\_file directive. 
+It sets up profiling by initilizing a few variables, and settting register_shutdown_function with the footer. 
+Once started profiles are done when requested (?\_profile=1), or randomly. 
+Profiled pages display a link to their profile results at the bottom of the page, by default this is disabled but can
+be enable for all urls, or with specific blacklist based for specific documents. e.g. pages generating XML, images, etc.
+
 * For tips on including header.php on an nginx + php-fpm install take a look at: http://www.justincarmony.com/blog/2012/04/23/php-fpm-nginx-php_value-and-multiple-values/
+
 * The GUI is a bit prettier (Thanks to Graham Slater)
+
 * It uses a MySQL backend, the database schema is stored in xhprof\_runs.php 
+
 * There's a frontend to view different runs, compare runs to the same url, etc.
 
 Key Features
 -------------
 
 * Listing 25, 50 most recent runs
-* Display most expensive (cpu), longest running, or highest memory usage runs 
-  for the day
+* Display most expensive (cpu), longest running, or highest memory usage runs for the day
+
 * It introduces the concept of "Similar" URLs. Consider:
   * http://news.example.com/?story=23
   * http://news.example.com/?story=25
   While the URLs are different, the PHP code execution path is likely identical,
   by tweaking the method in xhprof\_runs.php you can help the frontend be aware
   that these urls are identical.
+
 * Highcharts is used to graph stats over requests for an 
   easy heads up display.
 
@@ -66,14 +67,14 @@ Requirements
 Besides a simple PHP running on your favourite web server you will also need following packages:
 
 * [tideways_xhprof](https://github.com/tideways/php-xhprof-extension)
-* php5-mysql
+* php-mysqli or php-pdo
 * graphviz (uses `dot` to generate callgraphs)
 
 Installation
 -------------
 
 * Install your favourite mix of PHP and web server
-* Install MySQL server
+* Install MySQL/Mariadb server
 * Clone the project to some folder
 * Map the sub folder `xhprof_html` to be accessible over HTTP
 * Move `xhprof_lib/config.sample.php` to `xhprof_lib/config.php`
@@ -84,10 +85,11 @@ Installation
  * Update the `controlIPs` variable to enable access.
   * For a development machine you can set this to `false` to disable IP checks.
 * Import the DB schema (it is just 1 table)
- * See the SQL at [xhprof_runs.php](https://github.com/toomasr/xhprof/blob/master/xhprof_lib/utils/xhprof_runs.php#L109)
+ * See the SQL at [xhprof_docs/Example_Table.sql](https://raw.githubusercontent.com/rotelok/yaxgui/yaxgui-ng/xhprof_docs/Example_Table.sql)
 * Add a PHP configuration to enable the profiling
  * If using Apache you can edit your virtual host configuration
  * Add `php_admin_value auto_prepend_file "/path/to/xhprof/external/header.php"`
 * Visit http://your-server/xhprof/xhprof_html/ and be amazed!
  * To get profiler information showing up there visit your page with a `GET` variable `_profile=1`.
  * For example `http://localhost/?_profile=1`
+ * Or if you want to store information passively set the weight in config.php to a low number ie:10 will store information for 90% of the accesses
