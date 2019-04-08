@@ -5,15 +5,15 @@ class Db_Mysqli extends Db_Abstract {
     /* @var mysqli */
     protected $db;
 
-    public static function getNextAssoc($resultSet) {
+    public function getNextAssoc($resultSet) {
         return mysqli_fetch_assoc($resultSet);
     }
 
-    public static function unixTimestamp($field) {
+    public function unixTimestamp($field) {
         return 'UNIX_TIMESTAMP(' . $field . ')';
     }
 
-    public static function dateSub($days) {
+    public function dateSub($days) {
         return 'DATE_SUB(CURDATE(), INTERVAL ' . $days . ' DAY)';
     }
 

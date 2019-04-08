@@ -1,24 +1,18 @@
 <?php
 
 abstract class Db_Abstract {
-    public $linkID;
+    public $db;
     protected $config;
 
     public function __construct($config) {
         $this->config = $config;
     }
 
-    public static function unixTimestamp($field) {
-        throw new RuntimeException("Method '" . get_called_class() . "::" . __FUNCTION__ . "' not implemented");
-    }
+    abstract public function unixTimestamp($field);
 
-    public static function dateSub($days) {
-        throw new RuntimeException("Method '" . get_called_class() . "::" . __FUNCTION__ . "' not implemented");
-    }
+    abstract public function dateSub($days);
 
-    public static function getNextAssoc($resultSet) {
-        throw new RuntimeException("Method '" . get_called_class() . "::" . __FUNCTION__ . "' not implemented");
-    }
+    abstract public function getNextAssoc($resultSet);
 
     abstract public function connect();
 

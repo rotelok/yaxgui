@@ -7,15 +7,15 @@ class Db_Pdo extends Db_Abstract {
     /** @var PDO */
     public $db;
 
-    public static function getNextAssoc($resultSet) {
+    public function getNextAssoc($resultSet) {
         return $resultSet->fetch();
     }
 
-    public static function unixTimestamp($field) {
+    public function unixTimestamp($field) {
         return 'UNIX_TIMESTAMP(' . $field . ')';
     }
 
-    public static function dateSub($days) {
+    public function dateSub($days) {
         return 'DATE_SUB(CURDATE(), INTERVAL ' . $days . ' DAY)';
     }
 
