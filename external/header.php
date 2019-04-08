@@ -114,9 +114,8 @@ if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_x
             tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY);
         }
     }
-}
-elseif (!extension_loaded('tideways') && $_xhprof['display'] === true) {
-    $message = 'Warning! Unable to profile run, tideways extension not loaded';
+}elseif (!(extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_xhprof['display'] === true) {
+    $message = 'Warning! Unable to profile run, tideways or tideways_xhprof extension not loaded';
     trigger_error($message, E_USER_WARNING);
 }
 
