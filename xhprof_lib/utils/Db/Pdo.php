@@ -2,7 +2,10 @@
 require_once __DIR__ . '/Abstract.php';
 
 class Db_Pdo extends Db_Abstract {
-    protected $curStmt;
+    /* @var PDOStatement */
+    private $curStmt;
+    /** @var PDO */
+    public $db;
 
     public static function getNextAssoc($resultSet) {
         return $resultSet->fetch();
@@ -17,16 +20,15 @@ class Db_Pdo extends Db_Abstract {
     }
 
     public function connect() {
-        $connectionString = $this->config['dbtype'] . ':host=' . $this->config['dbhost'] . ';dbname=' . $this->config['dbname'];
-        $db = new PDO($connectionString, $this->config['dbuser'], $this->config['dbpass']);
-        if ($db === FALSE) {
-            xhprof_error("Could not connect to db");
-            $run_desc = "could not connect to db";
-            throw new Exception("Unable to connect to database");
-            return false;
+        $connectionString = $this->config['dbtype'] . ':host=' . $this->config['dbhost'] . ';dbname=' . $this->config['dbname'].";charset=utf8mb4";
+        $this->db = new PDO($connectionString, $this->config['dbuser'], $this->config['dbpass']);
+        if ($this->db !== FALSE) {
+            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         }
-        $this->db = $db;
-        $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        else {
+            xhprof_error("Could not connect to db");
+            throw new RuntimeException("Unable to connect to database");
+        }
     }
 
     public function query($sql) {
@@ -39,8 +41,7 @@ class Db_Pdo extends Db_Abstract {
         //Dirty trick, PDO::quote add quote around values (you're beautiful => 'you\'re beautiful')
         // which are already added in xhprof_runs.php
         $str = substr($str, 0, -1);
-        $str = substr($str, 1);
-        return $str;
+        return substr($str, 1);
     }
 
     public function affectedRows() {
