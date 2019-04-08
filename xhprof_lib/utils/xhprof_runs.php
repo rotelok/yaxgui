@@ -387,8 +387,8 @@ class XHProfRuns_Default implements iXHProfRuns {
         }
     }
 
-    private function gen_run_id($type) {
-        return uniqid();
+    private function gen_run_id($namespace) {
+        return uniqid($namespace."-", true);
     }
 
 
