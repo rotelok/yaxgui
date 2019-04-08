@@ -71,15 +71,14 @@ interface iXHProfRuns {
 class XHProfRuns_Default implements iXHProfRuns {
 
     public $prefix = 't11_';
-    public $run_details = null;
+    public $run_details;
     /**
      *
      * @var Db_Abstract
      */
     protected $db;
-    private $dir = '';
 
-    public function __construct($dir = null) {
+    public function __construct() {
         $this->db();
     }
 
@@ -95,8 +94,7 @@ class XHProfRuns_Default implements iXHProfRuns {
     public static function getDbClass() {
         global $_xhprof;
 
-        $class = 'Db_' . $_xhprof['dbadapter'];
-        return $class;
+        return 'Db_' . $_xhprof['dbadapter'];
     }
 
     public static function getNextAssoc($resultSet) {
@@ -118,9 +116,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         unset($criteria['days']);
         $criteria['group by'] = "url";
         $criteria['order by'] = "count";
-        $resultSet = $this->getRuns($criteria);
-
-        return $resultSet;
+        return $this->getRuns($criteria);
     }
 
     /**
@@ -154,7 +150,7 @@ class XHProfRuns_Default implements iXHProfRuns {
             elseif ($hasWhere === true) {
                 $query .= "AND ";
             }
-            if (strlen($value) == 0) {
+            if ($value == '') {
                 $query .= $column;
             }
 
@@ -185,15 +181,13 @@ class XHProfRuns_Default implements iXHProfRuns {
             $query .= " LIMIT {$stats['limit']} ";
         }
 
-        $resultSet = $this->db->query($query);
-        return $resultSet;
+        return $this->db->query($query);
     }
 
     public function getDistinct($data) {
         $sql['column'] = $this->db->escape($data['column']);
         $query = "SELECT DISTINCT(`{$sql['column']}`) FROM `details`";
-        $rs = $this->db->query($query);
-        return $rs;
+        return $this->db->query($query);
     }
 
     /**
@@ -299,8 +293,7 @@ class XHProfRuns_Default implements iXHProfRuns {
      */
     public function getUrlStats($data) {
         $data['select'] = '`id`, ' . $this->db->unixTimestamp('timestamp') . ' as `timestamp`, `pmu`, `wt`, `cpu`';
-        $rs = $this->getRuns($data);
-        return $rs;
+        return $this->getRuns($data);
     }
 
     /**
@@ -377,21 +370,20 @@ class XHProfRuns_Default implements iXHProfRuns {
         $sql['type'] = (int)(isset($xhprof_details['type']) ? $xhprof_details['type'] : 0);
         $sql['timestamp'] = $this->db->escape($_SERVER['REQUEST_TIME']);
         $sql['server_id'] = $this->db->escape($_xhprof['servername']);
-        $sql['aggregateCalls_include'] = getenv('xhprof_aggregateCalls_include') ? getenv('xhprof_aggregateCalls_include') : '';
+        $sql['aggregateCalls_include'] = getenv('xhprof_aggregateCalls_include') ?: '';
 
         $query = "INSERT INTO `details` (`id`, `url`, `c_url`, `timestamp`, `server name`, `perfdata`, `type`, `cookie`, `post`, `get`, `pmu`, `wt`, `cpu`, `server_id`, `aggregateCalls_include`) VALUES('$run_id', '{$sql['url']}', '{$sql['c_url']}', FROM_UNIXTIME('{$sql['timestamp']}'), '{$sql['servername']}', '{$sql['data']}', '{$sql['type']}', '{$sql['cookie']}', '{$sql['post']}', '{$sql['get']}', '{$sql['pmu']}', '{$sql['wt']}', '{$sql['cpu']}', '{$sql['server_id']}', '{$sql['aggregateCalls_include']}')";
 
         $this->db->query($query);
-        if ($this->db->affectedRows($this->db->linkID) == 1) {
+        if ($this->db->affectedRows() == 1) {
             return $run_id;
         }
-        else {
-            global $_xhprof;
-            if ($_xhprof['display'] === true) {
-                echo "Failed to insert: $query <br>\n";
-            }
-            return -1;
+
+        global $_xhprof;
+        if ($_xhprof['display'] === true) {
+            echo "Failed to insert: $query <br>\n";
         }
+        return -1;
     }
 
     private function gen_run_id($namespace) {

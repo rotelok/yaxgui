@@ -30,18 +30,18 @@ function printSeconds($time) {
     $suffix = "microsecond";
 
     if ($time > 1000) {
-        $time = $time / 1000;
+        $time /= 1000;
         $suffix = "ms";
 
     }
 
     if ($time > 1000) {
-        $time = $time / 1000;
+        $time /= 1000;
         $suffix = "s";
     }
 
     if ($time > 60 && $suffix == "s") {
-        $time = $time / 60;
+        $time /= 60;
         $suffix = "minutes!";
     }
     return sprintf("%.4f {$suffix}", $time);
@@ -97,7 +97,7 @@ function getFilter($filterName) {
     if (isset($_GET[$filterName])) {
         if ($_GET[$filterName] == "None") {
             $serverFilter = null;
-            setcookie($filterName, null, 0);
+            setcookie($filterName, null);
         }
         else {
             setcookie($filterName, $_GET[$filterName], time() + 60 * 60);

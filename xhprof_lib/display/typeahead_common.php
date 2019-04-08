@@ -32,7 +32,7 @@ $params = ['q' => [XHPROF_STRING_PARAM, ''],
     'run' => [XHPROF_STRING_PARAM, ''],
     'run1' => [XHPROF_STRING_PARAM, ''],
     'run2' => [XHPROF_STRING_PARAM, ''],
-    'source' => [XHPROF_STRING_PARAM, 'xhprof'],
+    'source' => [XHPROF_STRING_PARAM, 'xhprof']
 ];
 
 // pull values of these params, and create named globals for each param

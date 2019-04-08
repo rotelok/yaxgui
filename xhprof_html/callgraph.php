@@ -30,7 +30,7 @@
  */
 require_once __DIR__ . "/../xhprof_lib/config.php";
 
-if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
+if ($controlIPs !== false && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
     die("You do not have permission to view this page.");
 }
 

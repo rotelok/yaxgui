@@ -3,7 +3,7 @@ require_once __DIR__ . "/../xhprof_lib/config.php";
 require_once __DIR__ . '/../xhprof_lib/display/xhprof.php';
 require __DIR__ . "/../xhprof_lib/utils/common.php";
 
-if (false !== $controlIPs && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
+if ($controlIPs !== false && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
     die("You do not have permission to view this page.");
 }
 
@@ -17,7 +17,7 @@ $params = ['run' => [XHPROF_STRING_PARAM, ''],
     'run1' => [XHPROF_STRING_PARAM, ''],
     'run2' => [XHPROF_STRING_PARAM, ''],
     'source' => [XHPROF_STRING_PARAM, 'xhprof'],
-    'all' => [XHPROF_UINT_PARAM, 0],
+    'all' => [XHPROF_UINT_PARAM, 0]
 ];
 
 // pull values of these params, and create named globals for each param

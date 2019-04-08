@@ -25,7 +25,7 @@ $xhprof_legal_image_types = [
     "jpg" => 1,
     "gif" => 1,
     "png" => 1,
-    "ps" => 1,
+    "ps" => 1
 ];
 
 /**
@@ -49,7 +49,7 @@ function xhprof_http_header($name, $value) {
         xhprof_error('http_header value not a string');
     }
 
-    header($name . ': ' . $value, true);
+    header($name . ': ' . $value);
 }
 
 /**
@@ -102,7 +102,7 @@ function xhprof_generate_image_by_dot($dot_script, $type) {
     $dotBinary = $_xhprof['dot_binary'];
 
     // detect windows
-    if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'Darwin')) {
+    if (stripos(PHP_OS, 'WIN') !== false && stripos(PHP_OS, 'Darwin') === false) {
         return xhprof_generate_image_by_dot_on_win($dot_script,
             $type,
             $errorFile,
@@ -200,7 +200,7 @@ function xhprof_generate_image_by_dot_on_win($dot_script,
     }
 
     // 4. delete temp files
-    foreach ($files as $type => $file) {
+    foreach ($files as $temp => $file) {
         unlink($file);
     }
 
@@ -256,11 +256,8 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
     $max_fontsize = 35;
     $max_sizing_ratio = 20;
 
-    $totals;
+    $totals = [];
 
-    if ($left === null) {
-        // init_metrics($raw_data, null, null);
-    }
     $sym_table = xhprof_compute_flat_info($raw_data, $totals);
 
     if ($critical_path) {
@@ -365,11 +362,9 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
         $fillcolor = (($sizing_factor < 1.5) ?
             ", style=filled, fillcolor=red" : "");
 
-        if ($critical_path) {
-            // highlight nodes along critical path.
-            if (!$fillcolor && array_key_exists($symbol, $path)) {
-                $fillcolor = ", style=filled, fillcolor=yellow";
-            }
+        // highlight nodes along critical path.
+        if ($critical_path && !$fillcolor && array_key_exists($symbol, $path)) {
+            $fillcolor = ", style=filled, fillcolor=yellow";
         }
 
         $fontsize = ", fontsize="
@@ -394,43 +389,41 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
                 . sprintf("%.1f%%", 100 * $info["excl_wt"] / $totals["wt"])
                 . ")\\n" . $info["ct"] . " total calls\"";
         }
+        else if (isset($left[$symbol], $right[$symbol])) {
+            $label = ", label=\"" . addslashes($symbol) .
+                "\\nInc: " . sprintf("%.3f", $left[$symbol]["wt"] / 1000.0)
+                . " ms - "
+                . sprintf("%.3f", $right[$symbol]["wt"] / 1000.0) . " ms = "
+                . sprintf("%.3f", $info["wt"] / 1000.0) . " ms" .
+                "\\nExcl: "
+                . sprintf("%.3f", $left[$symbol]["excl_wt"] / 1000.0)
+                . " ms - " . sprintf("%.3f", $right[$symbol]["excl_wt"] / 1000.0)
+                . " ms = " . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
+                "\\nCalls: " . sprintf("%.3f", $left[$symbol]["ct"]) . " - "
+                . sprintf("%.3f", $right[$symbol]["ct"]) . " = "
+                . sprintf("%.3f", $info["ct"]) . "\"";
+        }
+        else if (isset($left[$symbol])) {
+            $label = ", label=\"" . addslashes($symbol) .
+                "\\nInc: " . sprintf("%.3f", $left[$symbol]["wt"] / 1000.0)
+                . " ms - 0 ms = " . sprintf("%.3f", $info["wt"] / 1000.0)
+                . " ms" . "\\nExcl: "
+                . sprintf("%.3f", $left[$symbol]["excl_wt"] / 1000.0)
+                . " ms - 0 ms = "
+                . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
+                "\\nCalls: " . sprintf("%.3f", $left[$symbol]["ct"]) . " - 0 = "
+                . sprintf("%.3f", $info["ct"]) . "\"";
+        }
         else {
-            if (isset($left[$symbol]) && isset($right[$symbol])) {
-                $label = ", label=\"" . addslashes($symbol) .
-                    "\\nInc: " . sprintf("%.3f", $left[$symbol]["wt"] / 1000.0)
-                    . " ms - "
-                    . sprintf("%.3f", $right[$symbol]["wt"] / 1000.0) . " ms = "
-                    . sprintf("%.3f", $info["wt"] / 1000.0) . " ms" .
-                    "\\nExcl: "
-                    . sprintf("%.3f", $left[$symbol]["excl_wt"] / 1000.0)
-                    . " ms - " . sprintf("%.3f", $right[$symbol]["excl_wt"] / 1000.0)
-                    . " ms = " . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
-                    "\\nCalls: " . sprintf("%.3f", $left[$symbol]["ct"]) . " - "
-                    . sprintf("%.3f", $right[$symbol]["ct"]) . " = "
-                    . sprintf("%.3f", $info["ct"]) . "\"";
-            }
-            else if (isset($left[$symbol])) {
-                $label = ", label=\"" . addslashes($symbol) .
-                    "\\nInc: " . sprintf("%.3f", $left[$symbol]["wt"] / 1000.0)
-                    . " ms - 0 ms = " . sprintf("%.3f", $info["wt"] / 1000.0)
-                    . " ms" . "\\nExcl: "
-                    . sprintf("%.3f", $left[$symbol]["excl_wt"] / 1000.0)
-                    . " ms - 0 ms = "
-                    . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
-                    "\\nCalls: " . sprintf("%.3f", $left[$symbol]["ct"]) . " - 0 = "
-                    . sprintf("%.3f", $info["ct"]) . "\"";
-            }
-            else {
-                $label = ", label=\"" . addslashes($symbol) .
-                    "\\nInc: 0 ms - "
-                    . sprintf("%.3f", $right[$symbol]["wt"] / 1000.0)
-                    . " ms = " . sprintf("%.3f", $info["wt"] / 1000.0) . " ms" .
-                    "\\nExcl: 0 ms - "
-                    . sprintf("%.3f", $right[$symbol]["excl_wt"] / 1000.0)
-                    . " ms = " . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
-                    "\\nCalls: 0 - " . sprintf("%.3f", $right[$symbol]["ct"])
-                    . " = " . sprintf("%.3f", $info["ct"]) . "\"";
-            }
+            $label = ", label=\"" . addslashes($symbol) .
+                "\\nInc: 0 ms - "
+                . sprintf("%.3f", $right[$symbol]["wt"] / 1000.0)
+                . " ms = " . sprintf("%.3f", $info["wt"] / 1000.0) . " ms" .
+                "\\nExcl: 0 ms - "
+                . sprintf("%.3f", $right[$symbol]["excl_wt"] / 1000.0)
+                . " ms = " . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
+                "\\nCalls: 0 - " . sprintf("%.3f", $right[$symbol]["ct"])
+                . " = " . sprintf("%.3f", $info["ct"]) . "\"";
         }
         $result .= "N" . $sym_table[$symbol]["id"];
         $result .= "[shape=$shape " . $label . $width
@@ -441,8 +434,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
     foreach ($raw_data as $parent_child => $info) {
         list($parent, $child) = xhprof_parse_parent_child($parent_child);
 
-        if (isset($sym_table[$parent]) && isset($sym_table[$child]) &&
-            (empty($func) ||
+        if (isset($sym_table[$parent], $sym_table[$child]) && (empty($func) ||
                 (!empty($func) && ($parent == $func || $child == $func)))) {
 
             $label = $info["ct"] == 1 ? $info["ct"] . " call" : $info["ct"] . " calls";
@@ -477,15 +469,15 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
 
         }
     }
-    $result = $result . "\n}";
+    $result .= "\n}";
 
     return $result;
 }
 
 function xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
                                   $type, $threshold, $source) {
-    $total1;
-    $total2;
+    $total1 = [];
+    $total2 = [];
 
     list($raw_data1, $a) = $xhprof_runs_impl->get_run($run1, $source, $desc_unused);
     list($raw_data2, $b) = $xhprof_runs_impl->get_run($run2, $source, $desc_unused);
@@ -526,8 +518,9 @@ function xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
 function xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
                                    $threshold, $func, $source,
                                    $critical_path) {
-    if (!$run_id)
+    if (!$run_id) {
         return "";
+    }
 
     list($raw_data, $a) = $xhprof_runs_impl->get_run($run_id, $source, $description);
     if (!$raw_data) {
@@ -538,8 +531,7 @@ function xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
     $script = xhprof_generate_dot_script($raw_data, $threshold, $source,
         $description, $func, $critical_path);
 
-    $content = xhprof_generate_image_by_dot($script, $type);
-    return $content;
+    return xhprof_generate_image_by_dot($script, $type);
 }
 
 /**

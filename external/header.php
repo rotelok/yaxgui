@@ -21,7 +21,7 @@ class visibilitator {
             }
             return call_user_func_array([$a, $b], $arguments);
         }
-        call_user_func_array($func_name, $arguments);
+        return call_user_func_array($func_name, $arguments);
     }
 }
 
@@ -64,12 +64,10 @@ foreach ($exceptionPostURLs as $url) {
 unset($exceptionPostURLs);
 
 //Determine wether or not to profile this URL randomly
-if ($_xhprof['doprofile'] === false) {
-    //Profile weighting, one in one hundred requests will be profiled without being specifically requested
-    if ($weight > 0 && rand(1, $weight) == 1) {
-        $_xhprof['doprofile'] = true;
-        $_xhprof['type'] = 0;
-    }
+//Profile weighting, one in one hundred requests will be profiled without being specifically requested
+if (($_xhprof['doprofile'] === false) && $weight > 0 && mt_rand(1, $weight) == 1) {
+    $_xhprof['doprofile'] = true;
+    $_xhprof['type'] = 0;
 }
 unset($weight);
 
@@ -82,8 +80,6 @@ foreach ($ignoreURLs as $url) {
 }
 unset($ignoreURLs);
 
-unset($url);
-
 // Certain domains should never be profiled.
 foreach ($ignoreDomains as $domain) {
     if (stripos($_SERVER['HTTP_HOST'], $domain) !== FALSE) {
@@ -92,7 +88,6 @@ foreach ($ignoreDomains as $domain) {
     }
 }
 unset($ignoreDomains);
-unset($domain);
 
 //Display warning if extension not available
 if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_xhprof['doprofile'] === true) {
@@ -108,7 +103,7 @@ if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_x
     }
     elseif (extension_loaded("tideways_xhprof")) {
         if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
-            tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_NO_SPANS, array('ignored_functions' => $ignoredFunctions));
+            tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_NO_SPANS, ['ignored_functions' => $ignoredFunctions]);
         }
         else {
             tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY);

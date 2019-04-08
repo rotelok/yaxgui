@@ -90,9 +90,8 @@ function xhprof_build_parent_child_key($parent, $child) {
     if ($parent) {
         return $parent . "==>" . $child;
     }
-    else {
-        return $child;
-    }
+
+    return $child;
 }
 
 
@@ -200,7 +199,7 @@ function xhprof_normalize_metrics($raw_data, $num_runs) {
 
     $raw_data_total = [];
 
-    if (isset($raw_data["==>main()"]) && isset($raw_data["main()"])) {
+    if (isset($raw_data["==>main()"], $raw_data["main()"])) {
         xhprof_error("XHProf Error: both ==>main() and main() set in raw data...");
     }
 
@@ -269,13 +268,11 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
         // use the first run to derive what metrics to aggregate on.
         if ($idx == 0) {
             foreach ($raw_data["main()"] as $metric => $val) {
-                if ($metric != "pmu") {
-                    // for now, just to keep data size small, skip "peak" memory usage
-                    // data while aggregating.
-                    // The "regular" memory usage data will still be tracked.
-                    if (isset($val)) {
-                        $metrics[] = $metric;
-                    }
+                // for now, just to keep data size small, skip "peak" memory usage
+                // data while aggregating.
+                // The "regular" memory usage data will still be tracked.
+                if (($metric != "pmu") && isset($val)) {
+                    $metrics[] = $metric;
                 }
             }
         }
@@ -316,16 +313,14 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
 
         // aggregate $raw_data into $raw_data_total with appropriate weight ($wt)
         foreach ($raw_data as $parent_child => $info) {
-            if ($use_script_name) {
-                // if this is an old edge originating from main(), it now
-                // needs to be from '__script::$page'
-                if (substr($parent_child, 0, 9) == "main()==>") {
-                    $child = substr($parent_child, 9);
-                    // ignore the newly added edge from main()
-                    if (substr($child, 0, 10) != "__script::") {
-                        $parent_child = xhprof_build_parent_child_key("__script::$page",
-                            $child);
-                    }
+            // if this is an old edge originating from main(), it now
+            // needs to be from '__script::$page'
+            if ($use_script_name && strncmp($parent_child, "main()==>", 9) === 0) {
+                $child = substr($parent_child, 9);
+                // ignore the newly added edge from main()
+                if (strncmp($child, "__script::", 10) !== 0) {
+                    $parent_child = xhprof_build_parent_child_key("__script::$page",
+                        $child);
                 }
             }
 
@@ -353,7 +348,7 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
         $normalization_count = $run_count;
     }
 
-    $run_count = $run_count - count($bad_runs);
+    $run_count -= count($bad_runs);
 
     $data['description'] = "Aggregated Report for $run_count runs: " .
         "$runs_string $wts_string\n";
@@ -518,7 +513,7 @@ function xhprof_compute_inclusive_times($raw_data) {
              * calls a unique recursion-depth appended name (for example, foo@1).
              */
             xhprof_error("Error in Raw Data: parent & child are both: $parent");
-            return;
+            return [];
         }
 
         if (!isset($symbol_tab[$child])) {
@@ -600,7 +595,7 @@ function xhprof_prune_run($raw_data, $prune_percent) {
 
     $prune_threshold = (($main_info[$prune_metric] * $prune_percent) / 100.0);
 
-    init_metrics($raw_data, null, null, false);
+    init_metrics($raw_data, null, null);
     $flat_info = xhprof_compute_inclusive_times($raw_data);
 
     foreach ($raw_data as $parent_child => $info) {
@@ -678,8 +673,9 @@ define('XHPROF_BOOL_PARAM', 4);
  */
 function xhprof_get_param_helper($param) {
     $val = null;
-    if (isset($_GET[$param]))
+    if (isset($_GET[$param])) {
         $val = $_GET[$param];
+    }
     else if (isset($_POST[$param])) {
         $val = $_POST[$param];
     }
@@ -696,8 +692,9 @@ function xhprof_get_param_helper($param) {
 function xhprof_get_string_param($param, $default = '') {
     $val = xhprof_get_param_helper($param);
 
-    if ($val === null)
+    if ($val === null) {
         return $default;
+    }
 
     if (get_magic_quotes_gpc() == 1) {
         return stripslashes($val);
@@ -719,8 +716,9 @@ function xhprof_get_string_param($param, $default = '') {
 function xhprof_get_uint_param($param, $default = 0) {
     $val = xhprof_get_param_helper($param);
 
-    if ($val === null)
+    if ($val === null) {
         $val = $default;
+    }
 
     // trim leading/trailing whitespace
     $val = trim($val);
@@ -748,15 +746,18 @@ function xhprof_get_uint_param($param, $default = 0) {
 function xhprof_get_float_param($param, $default = 0) {
     $val = xhprof_get_param_helper($param);
 
-    if ($val === null)
+    if ($val === null) {
         $val = $default;
+    }
 
     // trim leading/trailing whitespace
     $val = trim($val);
 
     // TBD: confirm the value is indeed a float.
     if (true) // for now..
+    {
         return (float)$val;
+    }
 
     xhprof_error("$param is $val. It must be a float.");
     return null;
@@ -775,8 +776,9 @@ function xhprof_get_float_param($param, $default = 0) {
 function xhprof_get_bool_param($param, $default = false) {
     $val = xhprof_get_param_helper($param);
 
-    if ($val === null)
+    if ($val === null) {
         $val = $default;
+    }
 
     // trim leading/trailing whitespace
     $val = trim($val);

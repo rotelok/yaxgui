@@ -96,9 +96,8 @@ function xhprof_count_format($num) {
     if (round($num) == $num) {
         return number_format($num);
     }
-    else {
-        return number_format($num, 3);
-    }
+
+    return number_format($num, 3);
 }
 
 function xhprof_percent_format($s, $precision = 1) {
@@ -267,7 +266,7 @@ $descriptions = [
     "samples" => "Incl. Samples",
     "ISamples%" => "ISamples%",
     "excl_samples" => "Excl. Samples",
-    "ESamples%" => "ESamples%",
+    "ESamples%" => "ESamples%"
 ];
 
 // Formatting Callback Functions...
@@ -309,7 +308,7 @@ $format_cbk = [
     "samples" => "number_format",
     "ISamples%" => "xhprof_percent_format",
     "excl_samples" => "number_format",
-    "ESamples%" => "xhprof_percent_format",
+    "ESamples%" => "xhprof_percent_format"
 ];
 
 
@@ -352,7 +351,7 @@ $diff_descriptions = [
     "samples" => "Incl. Samples Diff",
     "ISamples%" => "ISamples Diff%",
     "excl_samples" => "Excl. Samples Diff",
-    "ESamples%" => "ESamples Diff%",
+    "ESamples%" => "ESamples Diff%"
 ];
 
 // columns that'll be displayed in a top-level report
@@ -388,27 +387,27 @@ function sort_cbk($a, $b) {
         $left = strtoupper($a["fn"]);
         $right = strtoupper($b["fn"]);
 
-        if ($left == $right)
+        if ($left == $right) {
             return 0;
+        }
         return ($left < $right) ? -1 : 1;
 
     }
-    else {
 
-        // descending sort for all others
-        $left = $a[$sort_col];
-        $right = $b[$sort_col];
+// descending sort for all others
+    $left = $a[$sort_col];
+    $right = $b[$sort_col];
 
-        // if diff mode, sort by absolute value of regression/improvement
-        if ($diff_mode) {
-            $left = abs($left);
-            $right = abs($right);
-        }
-
-        if ($left == $right)
-            return 0;
-        return ($left > $right) ? -1 : 1;
+    // if diff mode, sort by absolute value of regression/improvement
+    if ($diff_mode) {
+        $left = abs($left);
+        $right = abs($right);
     }
+
+    if ($left == $right) {
+        return 0;
+    }
+    return ($left > $right) ? -1 : 1;
 }
 
 /**
@@ -471,7 +470,7 @@ function init_metrics($xhprof_data, $rep_symbol, $sort, $diff_report = false) {
 
     $pc_stats = $stats;
 
-    $possible_metrics = xhprof_get_possible_metrics($xhprof_data);
+    $possible_metrics = xhprof_get_possible_metrics();
     foreach ($possible_metrics as $metric => $desc) {
         if (isset($xhprof_data["main()"][$metric])) {
             $metrics[] = $metric;
@@ -505,9 +504,8 @@ function stat_description($stat) {
     if ($diff_mode) {
         return $diff_descriptions[$stat];
     }
-    else {
-        return $descriptions[$stat];
-    }
+
+    return $descriptions[$stat];
 }
 
 
@@ -656,10 +654,8 @@ function pct($a, $b) {
     if ($b == 0) {
         return "N/A";
     }
-    else {
-        $res = (round($a * 1000 / $b) / 10);
-        return $res;
-    }
+
+    return round($a * 1000 / $b) / 10;
 }
 
 /**
@@ -909,13 +905,11 @@ function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links) {
                 . "Sorted by $desc Diff";
         }
     }
+    else if ($all) {
+        $title = "Sorted by $desc";
+    }
     else {
-        if ($all) {
-            $title = "Sorted by $desc";
-        }
-        else {
-            $title = "Displaying top $limit functions: Sorted by $desc";
-        }
+        $title = "Displaying top $limit functions: Sorted by $desc";
     }
     print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $limit);
 }
@@ -940,10 +934,12 @@ function pc_info($info, $base_ct, $base_info, $parent) {
     global $format_cbk;
     global $display_calls;
 
-    if ($parent)
+    if ($parent) {
         $type = "Parent";
-    else
+    }
+    else {
         $type = "Child";
+    }
 
     if ($display_calls) {
         $mouseoverct = get_tooltip_attributes($type, "ct");
@@ -1010,7 +1006,7 @@ function print_symbol_summary($symbol_info, $stat, $base) {
     print("$desc: </td>");
     print(number_format($val));
     print(" (" . pct($val, $base) . "% of overall)");
-    if (substr($stat, 0, 4) == "excl") {
+    if (strncmp($stat, "excl", 4) === 0) {
         $func_base = $symbol_info[str_replace("excl_", "", $stat)];
         print(" (" . pct($val, $func_base) . "% of this function)");
     }
@@ -1156,10 +1152,12 @@ function symbol_report($url_params,
             $header = $desc;
         }
 
-        if ($stat == "fn")
+        if ($stat == "fn") {
             print("<th align=left><nobr>$header</th>");
-        else
+        }
+        else {
             print("<th " . $vwbar . "><nobr>$header</th>");
+        }
     }
     print("</tr>");
 
@@ -1299,7 +1297,7 @@ function profiler_single_run_report($url_params,
                                     $run,
                                     $run_details = null) {
 
-    init_metrics($xhprof_data, $rep_symbol, $sort, false);
+    init_metrics($xhprof_data, $rep_symbol, $sort);
 
     profiler_report($url_params, $rep_symbol, $sort, $run, $run_desc,
         $xhprof_data, $run_details);
@@ -1397,7 +1395,7 @@ function displayXHProfReport($xhprof_runs_impl, $url_params, $source,
                 $wts_array = null;
             }
             $data = xhprof_aggregate_runs($xhprof_runs_impl,
-                $runs_array, $wts_array, $source, false);
+                $runs_array, $wts_array, $source);
             $xhprof_data = $data['raw'];
             $description = $data['description'];
         }

@@ -114,9 +114,6 @@ function _aggregateCalls($calls, $rules = []) {
                 unset($calls[$index]);  //Remove it from the listing
                 break;  //We don't need to run any more rules on this
             }
-            else {
-                //echo "nomatch for $search in {$call['fn']}<br />\n";
-            }
         }
     }
     return array_merge($addIns, $calls);
