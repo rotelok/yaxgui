@@ -361,11 +361,18 @@ class XHProfRuns_Default implements iXHProfRuns {
         }
 
 
-        $url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['PHP_SELF'];
         $sname = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+        $url =  $_SERVER['PHP_SELF'];
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $scheme = "";
+            if (isset($_SERVER['REQUEST_SCHEME'])) {
+                $scheme = $_SERVER['REQUEST_SCHEME'] . '://';
+            }
+            $url = $scheme . $sname . $_SERVER['REQUEST_URI'];
+        }
 
         $sql['url'] = $this->db->escape($url);
-        $sql['c_url'] = $this->db->escape(_urlSimilartor($_SERVER['REQUEST_URI']));
+        $sql['c_url'] = $this->db->escape(_urlSimilartor($url));
         $sql['servername'] = $this->db->escape($sname);
         $sql['type'] = (int)(isset($xhprof_details['type']) ? $xhprof_details['type'] : 0);
         $sql['timestamp'] = $this->db->escape($_SERVER['REQUEST_TIME']);
