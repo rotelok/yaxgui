@@ -120,7 +120,7 @@ elseif (!extension_loaded('tideways') && $_xhprof['display'] === true) {
     trigger_error($message, E_USER_WARNING);
 }
 
-function xhprof_shutdown_function() {
+register_shutdown_function(static function () {
     global $_xhprof;
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
         $isAjax = true;
@@ -143,6 +143,6 @@ function xhprof_shutdown_function() {
         }
     }
 
-}
+});
 
-register_shutdown_function('xhprof_shutdown_function');
+
