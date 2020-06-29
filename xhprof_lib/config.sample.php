@@ -69,23 +69,25 @@ if (getenv('xhprof_weight')) {
  * Simplified URL for display and comparison purposes. A good simplified URL would be:
  * http://example.org/stories.php?id=
  *
- * @param string $url The URL to be simplified
+ * @param  string $url The URL to be simplified
  * @return string The simplified URL
  */
-function _urlSimilartor($url) {
+function _urlSimilartor($url)
+{
     //This is an example
     $url = preg_replace("!\d{4}!", "", $url);
 
     // For domain-specific configuration, you can use Apache setEnv xhprof_urlSimilartor_include [some_php_file]
     if ($similartorinclude = getenv('xhprof_urlSimilartor_include')) {
-        require_once $similartorinclude;
+        include_once $similartorinclude;
     }
 
     $url = preg_replace("![?&]_profile=\d!", "", $url);
     return $url;
 }
 
-function _aggregateCalls($calls, $rules = []) {
+function _aggregateCalls($calls, $rules = [])
+{
     if (!isset($rules["Loading"])) {
         $rules['Loading'] = 'load::';
     }
@@ -94,7 +96,7 @@ function _aggregateCalls($calls, $rules = []) {
     }
     // For domain-specific configuration, you can use Apache setEnv xhprof_aggregateCalls_include [some_php_file]
     if (isset($run_details['aggregateCalls_include']) && strlen($run_details['aggregateCalls_include']) > 1) {
-        require_once $run_details['aggregateCalls_include'];
+        include_once $run_details['aggregateCalls_include'];
     }
 
     $addIns = [];
@@ -106,8 +108,7 @@ function _aggregateCalls($calls, $rules = []) {
                     foreach ($call as $k => $v) {
                         $addIns[$search][$k] += $v;
                     }
-                }
-                else {
+                } else {
                     $call['fn'] = $rule;
                     $addIns[$search] = $call;
                 }

@@ -1,27 +1,29 @@
 <?php
 
-abstract class Db_Abstract {
+abstract class Db_Abstract
+{
     public $db;
     protected $config;
 
-    public function __construct($config) {
+    public function __construct($config)
+    {
         $this->config = $config;
     }
 
     /**
-     * @param string $field
+     * @param  string $field
      * @return string
      */
     abstract public function unixTimestamp($field);
 
     /**
-     * @param int $days
+     * @param  int $days
      * @return string
      */
     abstract public function dateSub($days);
 
     /**
-     * @param $resultSet
+     * @param  $resultSet
      * @return mixed
      */
     abstract public function getNextAssoc($resultSet);
@@ -29,13 +31,13 @@ abstract class Db_Abstract {
     abstract public function connect();
 
     /**
-     * @param string $sql
+     * @param  string $sql
      * @return string
      */
     abstract public function query($sql);
 
     /**
-     * @param string $str
+     * @param  string $str
      * @return string
      */
     abstract public function escape($str);
@@ -44,6 +46,4 @@ abstract class Db_Abstract {
      * @return int
      */
     abstract public function affectedRows();
-
-
 }

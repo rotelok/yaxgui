@@ -36,9 +36,9 @@ $xhprof_legal_image_types = [
  *
  * @param string  HTTP header name, like 'Location'
  * @param string  HTTP header value, like 'http://www.example.com/'
- *
  */
-function xhprof_http_header($name, $value) {
+function xhprof_http_header($name, $value)
+{
 
     if (!$name) {
         xhprof_error('http_header usage');
@@ -57,7 +57,8 @@ function xhprof_http_header($name, $value) {
  *
  * @author cjiang
  */
-function xhprof_generate_mime_header($type, $length) {
+function xhprof_generate_mime_header($type, $length)
+{
     $mime = false;
     switch ($type) {
         case 'jpg':
@@ -85,15 +86,16 @@ function xhprof_generate_mime_header($type, $length) {
  * with "dot" command and pipe the "dot_script" to it and pipe out the
  * generated image content.
  *
- * @param dot_script, string, the script for DOT to generate the image.
- * @param type, one of the supported image types, see
+ * @param    dot_script, string, the script for DOT to generate the image.
+ * @param    type, one of the supported image types, see
  * $xhprof_legal_image_types.
  * @returns, binary content of the generated image on success. empty string on
  *           failure.
  *
  * @author cjiang
  */
-function xhprof_generate_image_by_dot($dot_script, $type) {
+function xhprof_generate_image_by_dot($dot_script, $type)
+{
     // get config => yep really dirty - but unobstrusive
     global $_xhprof;
 
@@ -103,11 +105,13 @@ function xhprof_generate_image_by_dot($dot_script, $type) {
 
     // detect windows
     if (stripos(PHP_OS, 'WIN') !== false && stripos(PHP_OS, 'Darwin') === false) {
-        return xhprof_generate_image_by_dot_on_win($dot_script,
+        return xhprof_generate_image_by_dot_on_win(
+            $dot_script,
             $type,
             $errorFile,
             $tmpDirectory,
-            $dotBinary);
+            $dotBinary
+        );
     }
 
     // parts of the original source
@@ -154,20 +158,21 @@ function xhprof_generate_image_by_dot($dot_script, $type) {
  * creating and writing to temp-files and reading them in again ...
  * not really nice but functional
  *
- * @param dot_script, string, the script for DOT to generate the image.
- * @param type, one of the supported image types, see
- * @param errorFile, string, the file to write errors to
- * @param tmpDirectory, string, the directory for temporary created files
- * @param dotBin, the dot-binary file (e.g. dot.exe)
+ * @param    dot_script, string, the script for DOT to generate the image.
+ * @param    type, one of the supported image types, see
+ * @param    errorFile, string, the file to write errors to
+ * @param    tmpDirectory, string, the directory for temporary created files
+ * @param    dotBin, the dot-binary file (e.g. dot.exe)
  * @returns, binary content of the generated image on success.
  *
  * @author Benjamin Carl <opensource@clickalicious.de>
  */
-function xhprof_generate_image_by_dot_on_win($dot_script,
-                                             $type,
-                                             $errorFile,
-                                             $tmpDirectory,
-                                             $dotBin
+function xhprof_generate_image_by_dot_on_win(
+    $dot_script,
+    $type,
+    $errorFile,
+    $tmpDirectory,
+    $dotBin
 ) {
     // assume no error
     $error = false;
@@ -216,14 +221,14 @@ function xhprof_generate_image_by_dot_on_win($dot_script,
 /*
  * Get the children list of all nodes.
  */
-function xhprof_get_children_table($raw_data) {
+function xhprof_get_children_table($raw_data)
+{
     $children_table = [];
     foreach ($raw_data as $parent_child => $info) {
         list($parent, $child) = xhprof_parse_parent_child($parent_child);
         if (!isset($children_table[$parent])) {
             $children_table[$parent] = [$child];
-        }
-        else {
+        } else {
             $children_table[$parent][] = $child;
         }
     }
@@ -233,23 +238,30 @@ function xhprof_get_children_table($raw_data) {
 /**
  * Generate DOT script from the given raw phprof data.
  *
- * @param raw_data, phprof profile data.
- * @param threshold, float, the threshold value [0,1). The functions in the
+ * @param    raw_data, phprof profile data.
+ * @param    threshold, float, the threshold value [0,1). The functions in the
  *                   raw_data whose exclusive wall times ratio are below the
  *                   threshold will be filtered out and won't apprear in the
  *                   generated image.
- * @param page, string(optional), the root node name. This can be used to
+ * @param    page, string(optional), the root node name. This can be used to
  *              replace the 'main()' as the root node.
- * @param func, string, the focus function.
- * @param critical_path, bool, whether or not to display critical path with
+ * @param    func, string, the focus function.
+ * @param    critical_path, bool, whether or not to display critical path with
  *                             bold lines.
  * @returns, string, the DOT script to generate image.
  *
  * @author cjiang
  */
-function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
-                                    $func, $critical_path, $right = null,
-                                    $left = null) {
+function xhprof_generate_dot_script(
+    $raw_data,
+    $threshold,
+    $source,
+    $page,
+    $func,
+    $critical_path,
+    $right = null,
+    $left = null
+) {
 
     $max_width = 5;
     $max_height = 3.5;
@@ -271,15 +283,22 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
             if (isset($children_table[$node])) {
                 $max_child = null;
                 foreach ($children_table[$node] as $child) {
-
                     if (isset($visited[$child])) {
                         continue;
                     }
-                    if ($max_child === null ||
-                        abs($raw_data[xhprof_build_parent_child_key($node,
-                            $child)]["wt"]) >
-                        abs($raw_data[xhprof_build_parent_child_key($node,
-                            $max_child)]["wt"])) {
+                    if ($max_child === null
+                        || abs(
+                            $raw_data[xhprof_build_parent_child_key(
+                                $node,
+                                $child
+                            )]["wt"]
+                        ) >abs(
+                            $raw_data[xhprof_build_parent_child_key(
+                                $node,
+                                $max_child
+                            )]["wt"]
+                        )
+                    ) {
                         $max_child = $child;
                     }
                 }
@@ -288,8 +307,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
                     $path_edges[xhprof_build_parent_child_key($node, $max_child)] = true;
                 }
                 $node = $max_child;
-            }
-            else {
+            } else {
                 $node = null;
             }
         }
@@ -304,8 +322,9 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
             "xhprof_disable"];
 
         foreach ($remove_funcs as $cur_del_func) {
-            if (array_key_exists($cur_del_func, $sym_table) &&
-                $sym_table[$cur_del_func]["ct"] == $total_times) {
+            if (array_key_exists($cur_del_func, $sym_table)
+                && $sym_table[$cur_del_func]["ct"] == $total_times
+            ) {
                 unset($sym_table[$cur_del_func]);
             }
         }
@@ -352,8 +371,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
     foreach ($sym_table as $symbol => $info) {
         if ($info["excl_wt"] == 0) {
             $sizing_factor = $max_sizing_ratio;
-        }
-        else {
+        } else {
             $sizing_factor = $max_wt / abs($info["excl_wt"]);
             if ($sizing_factor > $max_sizing_ratio) {
                 $sizing_factor = $max_sizing_ratio;
@@ -377,8 +395,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
             $shape = "octagon";
             $name = "Total: " . ($totals["wt"] / 1000.0) . " ms\\n";
             $name .= addslashes(isset($page) ? $page : $symbol);
-        }
-        else {
+        } else {
             $shape = "box";
             $name = addslashes($symbol) . "\\nInc: " . sprintf("%.3f", $info["wt"] / 1000) .
                 " ms (" . sprintf("%.1f%%", 100 * $info["wt"] / $totals["wt"]) . ")";
@@ -388,8 +405,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
                 . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms ("
                 . sprintf("%.1f%%", 100 * $info["excl_wt"] / $totals["wt"])
                 . ")\\n" . $info["ct"] . " total calls\"";
-        }
-        else if (isset($left[$symbol], $right[$symbol])) {
+        } elseif (isset($left[$symbol], $right[$symbol])) {
             $label = ", label=\"" . addslashes($symbol) .
                 "\\nInc: " . sprintf("%.3f", $left[$symbol]["wt"] / 1000.0)
                 . " ms - "
@@ -402,8 +418,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
                 "\\nCalls: " . sprintf("%.3f", $left[$symbol]["ct"]) . " - "
                 . sprintf("%.3f", $right[$symbol]["ct"]) . " = "
                 . sprintf("%.3f", $info["ct"]) . "\"";
-        }
-        else if (isset($left[$symbol])) {
+        } elseif (isset($left[$symbol])) {
             $label = ", label=\"" . addslashes($symbol) .
                 "\\nInc: " . sprintf("%.3f", $left[$symbol]["wt"] / 1000.0)
                 . " ms - 0 ms = " . sprintf("%.3f", $info["wt"] / 1000.0)
@@ -413,8 +428,7 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
                 . sprintf("%.3f", $info["excl_wt"] / 1000.0) . " ms" .
                 "\\nCalls: " . sprintf("%.3f", $left[$symbol]["ct"]) . " - 0 = "
                 . sprintf("%.3f", $info["ct"]) . "\"";
-        }
-        else {
+        } else {
             $label = ", label=\"" . addslashes($symbol) .
                 "\\nInc: 0 ms - "
                 . sprintf("%.3f", $right[$symbol]["wt"] / 1000.0)
@@ -434,27 +448,33 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
     foreach ($raw_data as $parent_child => $info) {
         list($parent, $child) = xhprof_parse_parent_child($parent_child);
 
-        if (isset($sym_table[$parent], $sym_table[$child]) && (empty($func) ||
-                (!empty($func) && ($parent == $func || $child == $func)))) {
-
+        if (isset($sym_table[$parent], $sym_table[$child]) && (empty($func)
+            || (!empty($func) && ($parent == $func || $child == $func)))
+        ) {
             $label = $info["ct"] == 1 ? $info["ct"] . " call" : $info["ct"] . " calls";
 
             $headlabel = $sym_table[$child]["wt"] > 0 ?
-                sprintf("%.1f%%", 100 * $info["wt"]
-                    / $sym_table[$child]["wt"])
+                sprintf(
+                    "%.1f%%",
+                    100 * $info["wt"]
+                    / $sym_table[$child]["wt"]
+                )
                 : "0.0%";
 
             $taillabel = ($sym_table[$parent]["wt"] > 0) ?
-                sprintf("%.1f%%",
+                sprintf(
+                    "%.1f%%",
                     100 * $info["wt"] /
-                    ($sym_table[$parent]["wt"] - $sym_table["$parent"]["excl_wt"]))
+                    ($sym_table[$parent]["wt"] - $sym_table["$parent"]["excl_wt"])
+                )
                 : "0.0%";
 
             $linewidth = 1;
             $arrow_size = 1;
 
-            if ($critical_path &&
-                isset($path_edges[xhprof_build_parent_child_key($parent, $child)])) {
+            if ($critical_path
+                && isset($path_edges[xhprof_build_parent_child_key($parent, $child)])
+            ) {
                 $linewidth = 10;
                 $arrow_size = 2;
             }
@@ -466,7 +486,6 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
                 . $label . "\", headlabel=\"" . $headlabel
                 . "\", taillabel=\"" . $taillabel . "\" ]";
             $result .= ";\n";
-
         }
     }
     $result .= "\n}";
@@ -474,8 +493,14 @@ function xhprof_generate_dot_script($raw_data, $threshold, $source, $page,
     return $result;
 }
 
-function xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
-                                  $type, $threshold, $source) {
+function xhprof_render_diff_image(
+    $xhprof_runs_impl,
+    $run1,
+    $run2,
+    $type,
+    $threshold,
+    $source
+) {
     $total1 = [];
     $total2 = [];
 
@@ -488,9 +513,16 @@ function xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
     $symbol_tab1 = xhprof_compute_flat_info($raw_data1, $total1);
     $symbol_tab2 = xhprof_compute_flat_info($raw_data2, $total2);
     $run_delta = xhprof_compute_diff($raw_data1, $raw_data2);
-    $script = xhprof_generate_dot_script($run_delta, $threshold, $source,
-        null, null, true,
-        $symbol_tab1, $symbol_tab2);
+    $script = xhprof_generate_dot_script(
+        $run_delta,
+        $threshold,
+        $source,
+        null,
+        null,
+        true,
+        $symbol_tab1,
+        $symbol_tab2
+    );
     $content = xhprof_generate_image_by_dot($script, $type);
 
     xhprof_generate_mime_header($type, strlen($content));
@@ -500,24 +532,30 @@ function xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
 /**
  * Generate image content from phprof run id.
  *
- * @param object $xhprof_runs_impl An object that implements
- *                                   the iXHProfRuns interface
- * @param run_id, integer, the unique id for the phprof run, this is the
+ * @param    object                                                         $xhprof_runs_impl An object that implements
+ *                                                                                            the iXHProfRuns interface
+ * @param    run_id, integer, the unique id for the phprof run, this is the
  *                primary key for phprof database table.
- * @param type, string, one of the supported image types. See also
+ * @param    type, string, one of the supported image types. See also
  *              $xhprof_legal_image_types.
- * @param threshold, float, the threshold value [0,1). The functions in the
+ * @param    threshold, float, the threshold value [0,1). The functions in the
  *                   raw_data whose exclusive wall times ratio are below the
  *                   threshold will be filtered out and won't apprear in the
  *                   generated image.
- * @param func, string, the focus function.
+ * @param    func, string, the focus function.
  * @returns, string, the DOT script to generate image.
  *
  * @author cjiang
  */
-function xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
-                                   $threshold, $func, $source,
-                                   $critical_path) {
+function xhprof_get_content_by_run(
+    $xhprof_runs_impl,
+    $run_id,
+    $type,
+    $threshold,
+    $func,
+    $source,
+    $critical_path
+) {
     if (!$run_id) {
         return "";
     }
@@ -528,8 +566,14 @@ function xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
         return "";
     }
 
-    $script = xhprof_generate_dot_script($raw_data, $threshold, $source,
-        $description, $func, $critical_path);
+    $script = xhprof_generate_dot_script(
+        $raw_data,
+        $threshold,
+        $source,
+        $description,
+        $func,
+        $critical_path
+    );
 
     return xhprof_generate_image_by_dot($script, $type);
 }
@@ -537,26 +581,39 @@ function xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
 /**
  * Generate image from phprof run id and send it to client.
  *
- * @param object $xhprof_runs_impl An object that implements
- *                                   the iXHProfRuns interface
- * @param run_id, integer, the unique id for the phprof run, this is the
+ * @param  object                                                           $xhprof_runs_impl An object that implements
+ *                                                                                            the iXHProfRuns interface
+ * @param  run_id, integer, the unique id for the phprof run, this is the
  *                primary key for phprof database table.
- * @param type, string, one of the supported image types. See also
+ * @param  type, string, one of the supported image types. See also
  *              $xhprof_legal_image_types.
- * @param threshold, float, the threshold value [0,1). The functions in the
+ * @param  threshold, float, the threshold value [0,1). The functions in the
  *                   raw_data whose exclusive wall times ratio are below the
  *                   threshold will be filtered out and won't apprear in the
  *                   generated image.
- * @param func, string, the focus function.
- * @param bool, does this run correspond to a PHProfLive run or a dev run?
+ * @param  func, string, the focus function.
+ * @param  bool, does this run correspond to a PHProfLive run or a dev run?
  * @author cjiang
  */
-function xhprof_render_image($xhprof_runs_impl, $run_id, $type, $threshold,
-                             $func, $source, $critical_path) {
+function xhprof_render_image(
+    $xhprof_runs_impl,
+    $run_id,
+    $type,
+    $threshold,
+    $func,
+    $source,
+    $critical_path
+) {
 
-    $content = xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
+    $content = xhprof_get_content_by_run(
+        $xhprof_runs_impl,
+        $run_id,
+        $type,
         $threshold,
-        $func, $source, $critical_path);
+        $func,
+        $source,
+        $critical_path
+    );
     if (!$content) {
         print "Error: either we can not find profile data for run_id " . $run_id
             . " or the threshold " . $threshold . " is too small or you do not"

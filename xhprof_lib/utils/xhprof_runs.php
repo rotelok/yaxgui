@@ -29,7 +29,8 @@
  *
  * @author Kannan
  */
-interface iXHProfRuns {
+interface iXHProfRuns
+{
 
     /**
      * Returns XHProf data given a run id ($run) of a given
@@ -50,7 +51,6 @@ interface iXHProfRuns {
      * unique run id for this saved XHProf run.
      *
      * Returns the run id for the saved XHProf run.
-     *
      */
     public function save_run($xhprof_data, $type, $run_id = null);
 }
@@ -68,7 +68,8 @@ interface iXHProfRuns {
  * @author Kannan
  * @author Paul Reinheimer (http://blog.preinheimer.com)
  */
-class XHProfRuns_Default implements iXHProfRuns {
+class XHProfRuns_Default implements iXHProfRuns
+{
 
     public $prefix = 't11_';
     public $run_details;
@@ -78,26 +79,30 @@ class XHProfRuns_Default implements iXHProfRuns {
      */
     protected $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db();
     }
 
-    protected function db() {
+    protected function db()
+    {
         global $_xhprof;
-        require_once __DIR__ . '/Db/' . $_xhprof['dbadapter'] . '.php';
+        include_once __DIR__ . '/Db/' . $_xhprof['dbadapter'] . '.php';
 
         $class = self::getDbClass();
         $this->db = new $class($_xhprof);
         $this->db->connect();
     }
 
-    public static function getDbClass() {
+    public static function getDbClass()
+    {
         global $_xhprof;
 
         return 'Db_' . $_xhprof['dbadapter'];
     }
 
-    public static function getNextAssoc($resultSet) {
+    public static function getNextAssoc($resultSet)
+    {
         $class = self::getDbClass();
         return $class::getNextAssoc($resultSet);
     }
@@ -105,10 +110,11 @@ class XHProfRuns_Default implements iXHProfRuns {
     /**
      * Obtains the pages that have been the hardest hit over the past N days, utalizing the getRuns() method.
      *
-     * @param array $criteria An associative array containing, at minimum, type, days, and limit
+     * @param  array $criteria An associative array containing, at minimum, type, days, and limit
      * @return resource The result set reprsenting the results of the query
      */
-    public function getHardHit($criteria) {
+    public function getHardHit($criteria)
+    {
         //call thing to get runs
         $criteria['select'] = "distinct(`{$criteria['type']}`), count(`{$criteria['type']}`) AS `count` , sum(`wt`) as total_wall, avg(`wt`) as avg_wall";
         unset($criteria['type']);
@@ -124,30 +130,28 @@ class XHProfRuns_Default implements iXHProfRuns {
      * are escaped automatically. You may also pass limit, order by, group by, or "where" to add those values,
      * all of which are used as is, no escaping.
      *
-     * @param array $stats Criteria by which to select columns
+     * @param  array $stats Criteria by which to select columns
      * @return resource
      */
-    public function getRuns($stats) {
+    public function getRuns($stats)
+    {
         if (isset($stats['select'])) {
             $query = "SELECT {$stats['select']} FROM `details` ";
-        }
-        else {
+        } else {
             $query = "SELECT * FROM `details` ";
         }
 
         $skippers = ["limit", "order by", "group by", "where", "select"];
         $hasWhere = false;
 
-        foreach ($stats AS $column => $value) {
-
+        foreach ($stats as $column => $value) {
             if (in_array($column, $skippers)) {
                 continue;
             }
             if ($hasWhere === false) {
                 $query .= " WHERE ";
                 $hasWhere = true;
-            }
-            elseif ($hasWhere === true) {
+            } elseif ($hasWhere === true) {
                 $query .= "AND ";
             }
             if ($value == '') {
@@ -162,8 +166,7 @@ class XHProfRuns_Default implements iXHProfRuns {
             if ($hasWhere === false) {
                 $query .= " WHERE ";
                 $hasWhere = true;
-            }
-            else {
+            } else {
                 $query .= " AND ";
             }
             $query .= $stats['where'];
@@ -184,7 +187,8 @@ class XHProfRuns_Default implements iXHProfRuns {
         return $this->db->query($query);
     }
 
-    public function getDistinct($data) {
+    public function getDistinct($data)
+    {
         $sql['column'] = $this->db->escape($data['column']);
         $query = "SELECT DISTINCT(`{$sql['column']}`) FROM `details`";
         return $this->db->query($query);
@@ -193,12 +197,13 @@ class XHProfRuns_Default implements iXHProfRuns {
     /**
      * Retreives a run from the database,
      *
-     * @param string $run_id unique identifier for the run being requested
-     * @param mixed $type
-     * @param mixed $run_desc
+     * @param  string $run_id   unique identifier for the run being requested
+     * @param  mixed  $type
+     * @param  mixed  $run_desc
      * @return mixed
      */
-    public function get_run($run_id, $type, &$run_desc) {
+    public function get_run($run_id, $type, &$run_desc)
+    {
         $run_id = $this->db->escape($run_id);
         $query = "SELECT * FROM `details` WHERE `id` = '$run_id'";
         $resultSet = $this->db->query($query);
@@ -212,8 +217,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         //The Performance data is compressed lightly to avoid max row length
         if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] == 'php')) {
             $contents = unserialize(gzuncompress($data['perfdata']));
-        }
-        else {
+        } else {
             $contents = json_decode(gzuncompress($data['perfdata']), true);
         }
 
@@ -224,8 +228,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         // The same function is called twice when diff'ing runs. In this case we'll populate the global scope with an array
         if (is_null($this->run_details)) {
             $this->run_details = $data;
-        }
-        else {
+        } else {
             $this->run_details[0] = $this->run_details;
             $this->run_details[1] = $data;
         }
@@ -240,11 +243,12 @@ class XHProfRuns_Default implements iXHProfRuns {
      * Get comparative information for a given URL and c_url, this information will be used to display stats like how many calls a URL has,
      * average, min, max execution time, etc. This information is pushed into the global namespace, which is horribly hacky.
      *
-     * @param string $url
-     * @param string $c_url
+     * @param  string $url
+     * @param  string $c_url
      * @return array
      */
-    public function getRunComparativeData($url, $c_url) {
+    public function getRunComparativeData($url, $c_url)
+    {
         $url = $this->db->escape($url);
         $c_url = $this->db->escape($c_url);
         //Runs same URL
@@ -277,7 +281,8 @@ class XHProfRuns_Default implements iXHProfRuns {
         return $comparative;
     }
 
-    protected function calculatePercentile($details) {
+    protected function calculatePercentile($details)
+    {
         $limit = (int)($details['count'] / 20);
         $query = "SELECT `{$details['column']}` as `value` FROM `details` WHERE `{$details['type']}` = '{$details['url']}' ORDER BY `{$details['column']}` DESC LIMIT $limit, 1";
         $rs = $this->db->query($query);
@@ -288,10 +293,11 @@ class XHProfRuns_Default implements iXHProfRuns {
     /**
      * Get stats (pmu, ct, wt) on a url or c_url
      *
-     * @param array $data An associative array containing the limit you'd like to set for the queyr, as well as either c_url or url for the desired element.
+     * @param  array $data An associative array containing the limit you'd like to set for the queyr, as well as either c_url or url for the desired element.
      * @return resource result set from the database query
      */
-    public function getUrlStats($data) {
+    public function getUrlStats($data)
+    {
         $data['select'] = '`id`, ' . $this->db->unixTimestamp('timestamp') . ' as `timestamp`, `pmu`, `wt`, `cpu`';
         return $this->getRuns($data);
     }
@@ -299,13 +305,14 @@ class XHProfRuns_Default implements iXHProfRuns {
     /**
      * Save the run in the database.
      *
-     * @param string $xhprof_data
-     * @param mixed $type
-     * @param string $run_id
-     * @param mixed $xhprof_details
+     * @param  string $xhprof_data
+     * @param  mixed  $type
+     * @param  string $run_id
+     * @param  mixed  $xhprof_details
      * @return string
      */
-    public function save_run($xhprof_data, $type, $run_id = null, $xhprof_details = null) {
+    public function save_run($xhprof_data, $type, $run_id = null, $xhprof_details = null)
+    {
         global $_xhprof;
 
         $sql = [];
@@ -320,20 +327,17 @@ class XHProfRuns_Default implements iXHProfRuns {
             //This code has not been tested
             if (isset($_xhprof['savepost']) && $_xhprof['savepost']) {
                 $sql['post'] = $this->db->escape(serialize($_POST));
-            }
-            else {
+            } else {
                 $sql['post'] = $this->db->escape(serialize(["Skipped" => "Post data omitted by rule"]));
             }
-        }
-        else {
+        } else {
             $sql['get'] = $this->db->escape(json_encode($_GET));
             $sql['cookie'] = $this->db->escape(json_encode($_COOKIE));
 
             //This code has not been tested
             if (isset($_xhprof['savepost']) && $_xhprof['savepost']) {
                 $sql['post'] = $this->db->escape(json_encode($_POST));
-            }
-            else {
+            } else {
                 $sql['post'] = $this->db->escape(json_encode(["Skipped" => "Post data omitted by rule"]));
             }
         }
@@ -348,8 +352,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         // full production code.
         if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer']) === 'php') {
             $sql['data'] = $this->db->escape(gzcompress(serialize($xhprof_data), 2));
-        }
-        else {
+        } else {
             $sql['data'] = $this->db->escape(gzcompress(json_encode($xhprof_data), 2));
         }
 
@@ -386,9 +389,8 @@ class XHProfRuns_Default implements iXHProfRuns {
         return -1;
     }
 
-    private function gen_run_id($namespace) {
+    private function gen_run_id($namespace)
+    {
         return uniqid($namespace."-", true);
     }
-
-
 }

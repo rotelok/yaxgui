@@ -19,7 +19,8 @@
 // Do not add any display specific code here.
 //
 
-function xhprof_error($message) {
+function xhprof_error($message)
+{
     error_log($message);
 }
 
@@ -29,7 +30,8 @@ function xhprof_error($message) {
  *
  * @author Kannan
  */
-function xhprof_get_possible_metrics() {
+function xhprof_get_possible_metrics()
+{
     static $possible_metrics =
         ["wt" => ["Wall", "microsecs", "walltime"],
             "ut" => ["User", "microsecs", "user cpu time"],
@@ -46,7 +48,8 @@ function xhprof_get_possible_metrics() {
  *
  * @author Kannan
  */
-function xhprof_get_metrics($xhprof_data) {
+function xhprof_get_metrics($xhprof_data)
+{
 
     // get list of valid metrics
     $possible_metrics = xhprof_get_possible_metrics();
@@ -69,7 +72,8 @@ function xhprof_get_metrics($xhprof_data) {
  *
  * @author Kannan
  */
-function xhprof_parse_parent_child($parent_child) {
+function xhprof_parse_parent_child($parent_child)
+{
     $ret = explode("==>", $parent_child);
 
     // Return if both parent and child are set
@@ -86,7 +90,8 @@ function xhprof_parse_parent_child($parent_child) {
  *
  * @author Kannan
  */
-function xhprof_build_parent_child_key($parent, $child) {
+function xhprof_build_parent_child_key($parent, $child)
+{
     if ($parent) {
         return $parent . "==>" . $child;
     }
@@ -98,16 +103,18 @@ function xhprof_build_parent_child_key($parent, $child) {
 /**
  * Checks if XHProf raw data appears to be valid and not corrupted.
  *
- * @param int $run_id Run id of run to be pruned.
- *                                 [Used only for reporting errors.]
+ * @param int   $run_id   Run id of run to be pruned.
+ *                        [Used only for reporting
+ *                        errors.]
  * @param array $raw_data XHProf raw data to be pruned
- *                                 & validated.
+ *                        & validated.
  *
- * @return  bool   true on success, false on failure
+ * @return bool   true on success, false on failure
  *
  * @author Kannan
  */
-function xhprof_valid_run($run_id, $raw_data) {
+function xhprof_valid_run($run_id, $raw_data)
+{
 
     $main_info = $raw_data["main()"];
     if (empty($main_info)) {
@@ -118,11 +125,9 @@ function xhprof_valid_run($run_id, $raw_data) {
     // raw data should contain either wall time or samples information...
     if (isset($main_info["wt"])) {
         $metric = "wt";
-    }
-    else if (isset($main_info["samples"])) {
+    } elseif (isset($main_info["samples"])) {
         $metric = "samples";
-    }
-    else {
+    } else {
         xhprof_error("XHProf: Wall Time information missing from Run ID: $run_id");
         return false;
     }
@@ -132,13 +137,17 @@ function xhprof_valid_run($run_id, $raw_data) {
 
         // basic sanity checks...
         if ($val < 0) {
-            xhprof_error("XHProf: $metric should not be negative: Run ID $run_id"
-                . serialize($info));
+            xhprof_error(
+                "XHProf: $metric should not be negative: Run ID $run_id"
+                . serialize($info)
+            );
             return false;
         }
         if ($val > 86400000000) {
-            xhprof_error("XHProf: $metric > 1 day found in Run ID: $run_id "
-                . serialize($info));
+            xhprof_error(
+                "XHProf: $metric > 1 day found in Run ID: $run_id "
+                . serialize($info)
+            );
             return false;
         }
     }
@@ -163,7 +172,8 @@ function xhprof_valid_run($run_id, $raw_data) {
  *
  * @author Kannan
  */
-function xhprof_trim_run($raw_data, $functions_to_keep) {
+function xhprof_trim_run($raw_data, $functions_to_keep)
+{
 
     // convert list of functions to a hash with function as the key
     $function_map = array_fill_keys($functions_to_keep, 1);
@@ -191,7 +201,8 @@ function xhprof_trim_run($raw_data, $functions_to_keep) {
  *
  * @author Kannan
  */
-function xhprof_normalize_metrics($raw_data, $num_runs) {
+function xhprof_normalize_metrics($raw_data, $num_runs)
+{
 
     if (empty($raw_data) || ($num_runs == 0)) {
         return $raw_data;
@@ -230,22 +241,27 @@ function xhprof_normalize_metrics($raw_data, $num_runs) {
  * in 2:4:1 ratio.
  *
  * @param object $xhprof_runs_impl An object that implements
- *                                    the iXHProfRuns interface
- * @param array $runs run ids of the XHProf runs..
- * @param array $wts integral (ideally) weights for $runs
- * @param string $source source to fetch raw data for run from
- * @param bool $use_script_name If true, a fake edge from main() to
- *                                  to __script::<scriptname> is introduced
- *                                  in the raw data so that after aggregations
- *                                  the script name is still preserved.
+ *                                 the iXHProfRuns interface
+ * @param array  $runs             run ids of the XHProf runs..
+ * @param array  $wts              integral (ideally) weights for $runs
+ * @param string $source           source to fetch raw data for run from
+ * @param bool   $use_script_name  If true, a fake edge from main() to
+ *                                 to __script::<scriptname> is
+ *                                 introduced in the raw data so that
+ *                                 after aggregations the script name
+ *                                 is still preserved.
  *
  * @return array  Return aggregated raw data
  *
  * @author Kannan
  */
-function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
-                               $wts, $source = "phprof",
-                               $use_script_name = false) {
+function xhprof_aggregate_runs(
+    $xhprof_runs_impl,
+    $runs,
+    $wts,
+    $source = "phprof",
+    $use_script_name = false
+) {
 
     $raw_data_total = null;
     $raw_data = null;
@@ -254,15 +270,15 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
     $run_count = count($runs);
     $wts_count = count($wts);
 
-    if (($run_count == 0) ||
-        (($wts_count > 0) && ($run_count != $wts_count))) {
+    if (($run_count == 0)
+        || (($wts_count > 0) && ($run_count != $wts_count))
+    ) {
         return ['description' => 'Invalid input..',
             'raw' => null];
     }
 
     $bad_runs = [];
     foreach ($runs as $idx => $run_id) {
-
         $raw_data = $xhprof_runs_impl->get_run($run_id, $source, $description);
 
         // use the first run to derive what metrics to aggregate on.
@@ -299,11 +315,12 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
                     $new_main[$metric] = $val + 0.00001;
                 }
                 $raw_data["main()"] = $new_main;
-                $raw_data[xhprof_build_parent_child_key("main()",
-                    "__script::$page")]
+                $raw_data[xhprof_build_parent_child_key(
+                    "main()",
+                    "__script::$page"
+                )]
                     = $fake_edge;
-            }
-            else {
+            } else {
                 $use_script_name = false;
             }
         }
@@ -319,8 +336,10 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
                 $child = substr($parent_child, 9);
                 // ignore the newly added edge from main()
                 if (strncmp($child, "__script::", 10) !== 0) {
-                    $parent_child = xhprof_build_parent_child_key("__script::$page",
-                        $child);
+                    $parent_child = xhprof_build_parent_child_key(
+                        "__script::$page",
+                        $child
+                    );
                 }
             }
 
@@ -328,8 +347,7 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
                 foreach ($metrics as $metric) {
                     $raw_data_total[$parent_child][$metric] = ($wt * $info[$metric]);
                 }
-            }
-            else {
+            } else {
                 foreach ($metrics as $metric) {
                     $raw_data_total[$parent_child][$metric] += ($wt * $info[$metric]);
                 }
@@ -342,8 +360,7 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
     if (isset($wts)) {
         $wts_string = "in the ratio (" . implode(":", $wts) . ")";
         $normalization_count = array_sum($wts);
-    }
-    else {
+    } else {
         $wts_string = "";
         $normalization_count = $run_count;
     }
@@ -352,8 +369,10 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
 
     $data['description'] = "Aggregated Report for $run_count runs: " .
         "$runs_string $wts_string\n";
-    $data['raw'] = xhprof_normalize_metrics($raw_data_total,
-        $normalization_count);
+    $data['raw'] = xhprof_normalize_metrics(
+        $raw_data_total,
+        $normalization_count
+    );
     $data['bad_runs'] = $bad_runs;
 
     return $data;
@@ -366,17 +385,18 @@ function xhprof_aggregate_runs($xhprof_runs_impl, $runs,
  *
  * Also, store overall totals in the 2nd argument.
  *
- * @param array $raw_data XHProf format raw profiler data.
- * @param array &$overall_totals OUT argument for returning
- *                                  overall totals for various
- *                                  metrics.
+ * @param  array $raw_data        XHProf format raw profiler data.
+ * @param  array &$overall_totals OUT argument for returning
+ *                                overall totals for various
+ *                                metrics.
  * @return array Returns a map from function name to its
  *               call count and inclusive & exclusive metrics
  *               (such as wall time, etc.).
  *
  * @author Kannan Muthukkaruppan
  */
-function xhprof_compute_flat_info($raw_data, &$overall_totals) {
+function xhprof_compute_flat_info($raw_data, &$overall_totals)
+{
 
     global $display_calls;
 
@@ -438,7 +458,8 @@ function xhprof_compute_flat_info($raw_data, &$overall_totals) {
  *
  * @author Kannan
  */
-function xhprof_compute_diff($xhprof_data1, $xhprof_data2) {
+function xhprof_compute_diff($xhprof_data1, $xhprof_data2)
+{
     global $display_calls;
 
     // use the second run to decide what metrics we will do the diff on
@@ -447,15 +468,12 @@ function xhprof_compute_diff($xhprof_data1, $xhprof_data2) {
     $xhprof_delta = $xhprof_data2;
 
     foreach ($xhprof_data1 as $parent_child => $info) {
-
         if (!isset($xhprof_delta[$parent_child])) {
-
             // this pc combination was not present in run1;
             // initialize all values to zero.
             if ($display_calls) {
                 $xhprof_delta[$parent_child] = ["ct" => 0];
-            }
-            else {
+            } else {
                 $xhprof_delta[$parent_child] = [];
             }
             foreach ($metrics as $metric) {
@@ -490,7 +508,8 @@ function xhprof_compute_diff($xhprof_data1, $xhprof_data2) {
  *
  * @author Kannan
  */
-function xhprof_compute_inclusive_times($raw_data) {
+function xhprof_compute_inclusive_times($raw_data)
+{
     global $display_calls;
 
     $metrics = xhprof_get_metrics($raw_data);
@@ -503,7 +522,6 @@ function xhprof_compute_inclusive_times($raw_data) {
      * function is called from.
      */
     foreach ($raw_data as $parent_child => $info) {
-
         list($parent, $child) = xhprof_parse_parent_child($parent_child);
 
         if ($parent == $child) {
@@ -517,18 +535,15 @@ function xhprof_compute_inclusive_times($raw_data) {
         }
 
         if (!isset($symbol_tab[$child])) {
-
             if ($display_calls) {
                 $symbol_tab[$child] = ["ct" => $info["ct"]];
-            }
-            else {
+            } else {
                 $symbol_tab[$child] = [];
             }
             foreach ($metrics as $metric) {
                 $symbol_tab[$child][$metric] = $info[$metric];
             }
-        }
-        else {
+        } else {
             if ($display_calls) {
                 /* increment call count for this child */
                 $symbol_tab[$child]["ct"] += $info["ct"];
@@ -564,7 +579,8 @@ function xhprof_compute_inclusive_times($raw_data) {
  *
  *  @author Kannan
  */
-function xhprof_prune_run($raw_data, $prune_percent) {
+function xhprof_prune_run($raw_data, $prune_percent)
+{
 
     $main_info = $raw_data["main()"];
     if (empty($main_info)) {
@@ -575,13 +591,13 @@ function xhprof_prune_run($raw_data, $prune_percent) {
     // raw data should contain either wall time or samples information...
     if (isset($main_info["wt"])) {
         $prune_metric = "wt";
-    }
-    else if (isset($main_info["samples"])) {
+    } elseif (isset($main_info["samples"])) {
         $prune_metric = "samples";
-    }
-    else {
-        xhprof_error("XHProf: for main() we must have either wt "
-            . "or samples attribute set");
+    } else {
+        xhprof_error(
+            "XHProf: for main() we must have either wt "
+            . "or samples attribute set"
+        );
         return false;
     }
 
@@ -599,17 +615,15 @@ function xhprof_prune_run($raw_data, $prune_percent) {
     $flat_info = xhprof_compute_inclusive_times($raw_data);
 
     foreach ($raw_data as $parent_child => $info) {
-
         list($parent, $child) = xhprof_parse_parent_child($parent_child);
 
         // is this child's overall total from all parents less than threshold?
         if ($flat_info[$child][$prune_metric] < $prune_threshold) {
             unset($raw_data[$parent_child]); // prune the edge
-        }
-        else if ($parent &&
-            ($parent != "__pruned__()") &&
-            ($flat_info[$parent][$prune_metric] < $prune_threshold)) {
-
+        } elseif ($parent
+            && ($parent != "__pruned__()")
+            && ($flat_info[$parent][$prune_metric] < $prune_threshold)
+        ) {
             // Parent's overall inclusive metric is less than a threshold.
             // All edges to the parent node will get nuked, and this child will
             // be a dangling child.
@@ -620,8 +634,7 @@ function xhprof_prune_run($raw_data, $prune_percent) {
                 foreach ($metrics as $metric) {
                     $raw_data[$pruned_edge][$metric] += $raw_data[$parent_child][$metric];
                 }
-            }
-            else {
+            } else {
                 $raw_data[$pruned_edge] = $raw_data[$parent_child];
             }
 
@@ -638,7 +651,8 @@ function xhprof_prune_run($raw_data, $prune_percent) {
  *
  * @author Kannan
  */
-function xhprof_array_set($arr, $k, $v) {
+function xhprof_array_set($arr, $k, $v)
+{
     $arr[$k] = $v;
     return $arr;
 }
@@ -648,7 +662,8 @@ function xhprof_array_set($arr, $k, $v) {
  *
  * @author Kannan
  */
-function xhprof_array_unset($arr, $k) {
+function xhprof_array_unset($arr, $k)
+{
     unset($arr[$k]);
     return $arr;
 }
@@ -671,12 +686,12 @@ define('XHPROF_BOOL_PARAM', 4);
  *
  * @author Kannan
  */
-function xhprof_get_param_helper($param) {
+function xhprof_get_param_helper($param)
+{
     $val = null;
     if (isset($_GET[$param])) {
         $val = $_GET[$param];
-    }
-    else if (isset($_POST[$param])) {
+    } elseif (isset($_POST[$param])) {
         $val = $_POST[$param];
     }
     return $val;
@@ -689,7 +704,8 @@ function xhprof_get_param_helper($param) {
  *
  * @author Kannan
  */
-function xhprof_get_string_param($param, $default = '') {
+function xhprof_get_string_param($param, $default = '')
+{
     $val = xhprof_get_param_helper($param);
 
     if ($val === null) {
@@ -713,7 +729,8 @@ function xhprof_get_string_param($param, $default = '') {
  *
  * @author Kannan
  */
-function xhprof_get_uint_param($param, $default = 0) {
+function xhprof_get_uint_param($param, $default = 0)
+{
     $val = xhprof_get_param_helper($param);
 
     if ($val === null) {
@@ -743,7 +760,8 @@ function xhprof_get_uint_param($param, $default = 0) {
  *
  * @author Kannan
  */
-function xhprof_get_float_param($param, $default = 0) {
+function xhprof_get_float_param($param, $default = 0)
+{
     $val = xhprof_get_param_helper($param);
 
     if ($val === null) {
@@ -754,8 +772,7 @@ function xhprof_get_float_param($param, $default = 0) {
     $val = trim($val);
 
     // TBD: confirm the value is indeed a float.
-    if (true) // for now..
-    {
+    if (true) { // for now..
         return (float)$val;
     }
 
@@ -773,7 +790,8 @@ function xhprof_get_float_param($param, $default = 0) {
  *
  * @author Kannan
  */
-function xhprof_get_bool_param($param, $default = false) {
+function xhprof_get_bool_param($param, $default = false)
+{
     $val = xhprof_get_param_helper($param);
 
     if ($val === null) {
@@ -804,7 +822,6 @@ function xhprof_get_bool_param($param, $default = false) {
     }
 
     return $val;
-
 }
 
 /**
@@ -826,7 +843,8 @@ function xhprof_get_bool_param($param, $default = false) {
  *                       used.
  * @author Kannan
  */
-function xhprof_param_init($params) {
+function xhprof_param_init($params)
+{
     /* Create variables specified in $params keys, init defaults */
     foreach ($params as $k => $v) {
         switch ($v[0]) {
@@ -843,8 +861,10 @@ function xhprof_param_init($params) {
                 $p = xhprof_get_bool_param($k, $v[1]);
                 break;
             default:
-                xhprof_error("Invalid param type passed to xhprof_param_init: "
-                    . $v[0]);
+                xhprof_error(
+                    "Invalid param type passed to xhprof_param_init: "
+                    . $v[0]
+                );
                 exit();
         }
 
@@ -861,7 +881,8 @@ function xhprof_param_init($params) {
  *
  * @author Kannan
  */
-function xhprof_get_matching_functions($q, $xhprof_data) {
+function xhprof_get_matching_functions($q, $xhprof_data)
+{
 
     $matches = [];
 
@@ -882,4 +903,3 @@ function xhprof_get_matching_functions($q, $xhprof_data) {
 
     return $res;
 }
-

@@ -1,6 +1,7 @@
 <?php
 
-function displayRuns($resultSet, $title = "") {
+function displayRuns($resultSet, $title = "")
+{
     echo "<div class=\"runTitle\">$title</div>\n";
     echo "<table id=\"box-table-a\" class=\"tablesorter\" summary=\"Stats\"><thead><tr><th>Timestamp</th><th>Cpu</th><th>Wall Time</th><th>Peak Memory Usage</th><th>URL</th><th>Simplified URL</th></tr></thead>";
     echo "<tbody>\n";
@@ -26,13 +27,13 @@ $(document).ready(function()
 SORTTABLE;
 }
 
-function printSeconds($time) {
+function printSeconds($time)
+{
     $suffix = "microsecond";
 
     if ($time > 1000) {
         $time /= 1000;
         $suffix = "ms";
-
     }
 
     if ($time > 1000) {
@@ -45,11 +46,11 @@ function printSeconds($time) {
         $suffix = "minutes!";
     }
     return sprintf("%.4f {$suffix}", $time);
-
 }
 
 
-function showChart($rs, $flip = false) {
+function showChart($rs, $flip = false)
+{
 
     $dataPoints = "";
     $ids = [];
@@ -86,28 +87,26 @@ function showChart($rs, $flip = false) {
 
 
     ob_start();
-    require __DIR__ . "/../templates/chart.phtml";
+    include __DIR__ . "/../templates/chart.phtml";
     $stuff = ob_get_contents();
     ob_end_clean();
     return [$stuff, "<div id=\"container\" style=\"width: 1000px; height: 500px; margin: 0 auto\"></div>"];
 }
 
 
-function getFilter($filterName) {
+function getFilter($filterName)
+{
     if (isset($_GET[$filterName])) {
         if ($_GET[$filterName] == "None") {
             $serverFilter = null;
             setcookie($filterName, null);
-        }
-        else {
+        } else {
             setcookie($filterName, $_GET[$filterName], time() + 60 * 60);
             $serverFilter = $_GET[$filterName];
         }
-    }
-    elseif (isset($_COOKIE[$filterName])) {
+    } elseif (isset($_COOKIE[$filterName])) {
         $serverFilter = $_COOKIE[$filterName];
-    }
-    else {
+    } else {
         $serverFilter = null;
     }
     return $serverFilter;

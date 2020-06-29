@@ -15,7 +15,6 @@
 //
 
 /**
- *
  * A callgraph generator for XHProf.
  *
  * * This file is part of the UI/reporting component,
@@ -83,11 +82,23 @@ $xhprof_runs_impl = new XHProfRuns_Default();
 
 if (!empty($run)) {
     // single run call graph image generation
-    xhprof_render_image($xhprof_runs_impl, $run, $type,
-        $threshold, $func, $source, $critical);
-}
-else {
+    xhprof_render_image(
+        $xhprof_runs_impl,
+        $run,
+        $type,
+        $threshold,
+        $func,
+        $source,
+        $critical
+    );
+} else {
     // diff report call graph image generation
-    xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
-        $type, $threshold, $source);
+    xhprof_render_diff_image(
+        $xhprof_runs_impl,
+        $run1,
+        $run2,
+        $type,
+        $threshold,
+        $source
+    );
 }

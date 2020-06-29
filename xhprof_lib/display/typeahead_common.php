@@ -20,7 +20,7 @@
  * the global $xhprof_runs_impl to correspond to an object that
  * implements the iXHProfRuns interface.
  *
- * @author(s)  Kannan Muthukkaruppan
+ * @author(s) Kannan Muthukkaruppan
  *             Changhao Jiang
  */
 
@@ -39,14 +39,10 @@ $params = ['q' => [XHPROF_STRING_PARAM, ''],
 xhprof_param_init($params);
 
 if (!empty($run)) {
-
     // single run mode
     $raw_data = $xhprof_runs_impl->get_run($run, $source, $desc_unused);
     $functions = xhprof_get_matching_functions($q, $raw_data);
-
-}
-else if (!empty($run1) && !empty($run2)) {
-
+} elseif (!empty($run1) && !empty($run2)) {
     // diff mode
     $raw_data = $xhprof_runs_impl->get_run($run1, $source, $desc_unused);
     $functions1 = xhprof_get_matching_functions($q, $raw_data);
@@ -57,8 +53,7 @@ else if (!empty($run1) && !empty($run2)) {
 
     $functions = array_unique(array_merge($functions1, $functions2));
     asort($functions);
-}
-else {
+} else {
     xhprof_error("no valid runs specified to typeahead endpoint");
     $functions = [];
 }
@@ -79,4 +74,3 @@ if (in_array($q, $functions)) {
 foreach ($functions as $f) {
     echo $f . "\n";
 }
-
