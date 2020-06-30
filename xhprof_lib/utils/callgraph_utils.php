@@ -401,7 +401,7 @@ function xhprof_generate_dot_script(
         if ($symbol == "main()") {
             $shape = "octagon";
             $name = "Total: " . ($totals["wt"] / 1000.0) . " ms\\n";
-            $name .= addslashes(isset($page) ? $page : $symbol);
+            $name .= addslashes($page ?? $symbol);
         } else {
             $shape = "box";
             $name = addslashes($symbol) . "\\nInc: " . sprintf("%.3f", $info["wt"] / 1000) .

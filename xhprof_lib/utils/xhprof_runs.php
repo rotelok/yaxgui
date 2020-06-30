@@ -350,9 +350,9 @@ class XHProfRuns_Default implements iXHProfRuns {
         }
 
 
-        $sql['pmu'] = isset($xhprof_data['main()']['pmu']) ? $xhprof_data['main()']['pmu'] : 0;
-        $sql['wt'] = isset($xhprof_data['main()']['wt']) ? $xhprof_data['main()']['wt'] : 0;
-        $sql['cpu'] = isset($xhprof_data['main()']['cpu']) ? $xhprof_data['main()']['cpu'] : 0;
+        $sql['pmu'] = $xhprof_data['main()']['pmu'] ?? 0;
+        $sql['wt'] = $xhprof_data['main()']['wt'] ?? 0;
+        $sql['cpu'] = $xhprof_data['main()']['cpu'] ?? 0;
 
 
         // The value of 2 seems to be light enugh that we're not killing the server, but still gives us lots of breathing room on
@@ -365,7 +365,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         }
 
 
-        $sname = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+        $sname = $_SERVER['SERVER_NAME'] ?? '';
         $url = $_SERVER['PHP_SELF'];
         if (isset($_SERVER['REQUEST_URI'])) {
             $scheme = "";
@@ -378,7 +378,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         $sql['url'] = $this->db->escape($url);
         $sql['c_url'] = $this->db->escape(_urlSimilartor($url));
         $sql['servername'] = $this->db->escape($sname);
-        $sql['type'] = (int)(isset($xhprof_details['type']) ? $xhprof_details['type'] : 0);
+        $sql['type'] = (int)($xhprof_details['type'] ?? 0);
         $sql['timestamp'] = $this->db->escape($_SERVER['REQUEST_TIME']);
         $sql['server_id'] = $this->db->escape($_xhprof['servername']);
         $sql['aggregateCalls_include'] = getenv('xhprof_aggregateCalls_include') ?: '';

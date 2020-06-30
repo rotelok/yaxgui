@@ -675,10 +675,8 @@ function profiler_report(
 
         /* single function report with parent/child information */
         if ($diff_mode) {
-            $info1 = isset($symbol_tab1[$rep_symbol]) ?
-                $symbol_tab1[$rep_symbol] : null;
-            $info2 = isset($symbol_tab2[$rep_symbol]) ?
-                $symbol_tab2[$rep_symbol] : null;
+            $info1 = $symbol_tab1[$rep_symbol] ?? NULL;
+            $info2 = $symbol_tab2[$rep_symbol] ?? NULL;
             symbol_report(
                 $url_params,
                 $run_delta,
