@@ -33,9 +33,6 @@ class XHProfRuns_Default implements iXHProfRuns
     protected function db()
     {
         global $_xhprof;
-        include_once __DIR__ . "/DatabaseAbstraction.php";
-        include_once __DIR__ . "/Driver" . $_xhprof['dbadapter'] . '.php';
-
         $class = self::getDbClass();
         $this->db = new $class($_xhprof);
         $this->db->connect();
@@ -46,7 +43,7 @@ class XHProfRuns_Default implements iXHProfRuns
         global $_xhprof;
 
         //return 'Db_' . $_xhprof['dbadapter'];
-        return "Rotelok\xhprof\DriverPdo";
+        return "Rotelok\xhprof\Database\DriverPdo";
     }
 
     public static function getNextAssoc($resultSet)

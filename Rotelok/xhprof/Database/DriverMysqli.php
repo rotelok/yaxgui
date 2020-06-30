@@ -1,11 +1,11 @@
 <?php
 
-namespace Rotelok\xhprof {
+namespace Rotelok\xhprof\Database {
 
     use mysqli;
     use mysqli_result;
 
-    class DriverMysqli extends DatabaseAbstraction
+    class DriverMysqli extends Abstraction
     {
         /* @var mysqli */
         protected $db;

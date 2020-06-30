@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../Rotelok/xhprof/iXHProfRuns.php";
-require_once __DIR__ . "/../Rotelok/xhprof/XHProfRuns_Default.php";
+require_once __DIR__ . "/../Rotelok/fakeAutoloader.php";
+
 if (PHP_SAPI === 'cli') {
     $_SERVER['REMOTE_ADDR'] = null;
     $_SERVER['HTTP_HOST'] = null;

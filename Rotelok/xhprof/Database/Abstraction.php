@@ -1,9 +1,9 @@
 <?php
-namespace Rotelok\xhprof {
+namespace Rotelok\xhprof\Database {
 
-    abstract class DatabaseAbstraction
+    abstract class Abstraction
     {
-        public $db;
+        protected $db;
         protected $config;
 
         public function __construct($config)

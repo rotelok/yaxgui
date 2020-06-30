@@ -1,17 +1,17 @@
 <?php
 
-namespace Rotelok\xhprof {
+namespace Rotelok\xhprof\Database {
 
     use PDO;
     use PDOException;
     use PDOStatement;
 
-    class DriverPdo extends DatabaseAbstraction
+    class DriverPdo extends Abstraction
     {
         /**
          * @var PDO
          */
-        public $db;
+        protected $db;
         /* @var PDOStatement */
         private $curStmt;
 
