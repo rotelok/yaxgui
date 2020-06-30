@@ -12,12 +12,6 @@ $_xhprof['dbadapter'] = 'Pdo';
 $_xhprof['servername'] = 'myserver';
 $_xhprof['namespace'] = 'myapp';
 $_xhprof['url'] = 'http://url/to/xhprof/xhprof_html';
-/*
- * Switch to JSON for better performance and support for larger profiler data sets.
- * Choices are 'php' or 'json'
- * WARNING: Will break with existing profile data, you will need to TRUNCATE the profile data table.
- */
-$_xhprof['serializer'] = 'json';
 
 // Default configuration values, should work on most linux distributions
 $_xhprof['dot_binary'] = '/usr/bin/dot';

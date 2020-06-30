@@ -11,23 +11,6 @@ if (PHP_SAPI === 'cli') {
 require_once __DIR__ . '/../xhprof_lib/config.php';
 
 
-//I'm Magic :)
-class visibilitator
-{
-    public static function __callstatic($name, $arguments)
-    {
-        $func_name = array_shift($arguments);
-        if (is_array($func_name)) {
-            [$a, $b] = $func_name;
-            if (count($arguments) == 0) {
-                $arguments = $arguments[0];
-            }
-            return call_user_func_array([$a, $b], $arguments);
-        }
-        return call_user_func_array($func_name, $arguments);
-    }
-}
-
 // Only users from authorized IP addresses may control Profiling
 if ($controlIPs === false || in_array($_SERVER['REMOTE_ADDR'], $controlIPs) || PHP_SAPI == 'cli') {
     if (isset($_GET['_profile'])) {

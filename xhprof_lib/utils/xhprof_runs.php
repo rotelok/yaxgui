@@ -223,17 +223,10 @@ class XHProfRuns_Default implements iXHProfRuns
         if (empty($data)) {
             return [null, null];
         }
-
-        //The Performance data is compressed lightly to avoid max row length
-        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer']) === 'php') {
-            $contents = unserialize(gzuncompress($data['perfdata']));
-        } else {
-            $contents = json_decode(gzuncompress($data['perfdata']), true);
-        }
+        $contents = json_decode(gzuncompress($data['perfdata']), true);
 
         //This data isnt' needed for display purposes, there's no point in keeping it in this array
         unset($data['perfdata']);
-
 
         // The same function is called twice when diff'ing runs. In this case we'll populate the global scope with an array
         if (is_null($this->run_details)) {
@@ -345,42 +338,19 @@ class XHProfRuns_Default implements iXHProfRuns
             $run_id = $this->gen_run_id($type);
         }
 
-        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer']) === 'php') {
-            $sql['get'] = $this->db->escape(serialize($_GET));
-            $sql['cookie'] = $this->db->escape(serialize($_COOKIE));
+        $sql['get'] = $this->db->escape(json_encode($_GET));
+        $sql['cookie'] = $this->db->escape(json_encode($_COOKIE));
 
-            //This code has not been tested
-            if (isset($_xhprof['savepost']) && $_xhprof['savepost']) {
-                $sql['post'] = $this->db->escape(serialize($_POST));
-            } else {
-                $sql['post'] = $this->db->escape(serialize(["Skipped" => "Post data omitted by rule"]));
-            }
+        //This code has not been tested
+        if (isset($_xhprof['savepost']) && $_xhprof['savepost']) {
+            $sql['post'] = $this->db->escape(json_encode($_POST));
         } else {
-            $sql['get'] = $this->db->escape(json_encode($_GET));
-            $sql['cookie'] = $this->db->escape(json_encode($_COOKIE));
-
-            //This code has not been tested
-            if (isset($_xhprof['savepost']) && $_xhprof['savepost']) {
-                $sql['post'] = $this->db->escape(json_encode($_POST));
-            } else {
-                $sql['post'] = $this->db->escape(json_encode(["Skipped" => "Post data omitted by rule"]));
-            }
+            $sql['post'] = $this->db->escape(json_encode(["Skipped" => "Post data omitted by rule"]));
         }
-
-
         $sql['pmu'] = $xhprof_data['main()']['pmu'] ?? 0;
         $sql['wt'] = $xhprof_data['main()']['wt'] ?? 0;
         $sql['cpu'] = $xhprof_data['main()']['cpu'] ?? 0;
-
-
-        // The value of 2 seems to be light enugh that we're not killing the server, but still gives us lots of breathing room on
-        // full production code.
-        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer']) === 'php') {
-            $sql['data'] = $this->db->escape(gzcompress(serialize($xhprof_data), 2));
-        } else {
-            $sql['data'] = $this->db->escape(gzcompress(json_encode($xhprof_data), 2));
-        }
-
+        $sql['data'] = $this->db->escape(gzcompress(json_encode($xhprof_data), 2));
 
         $sname = $_SERVER['SERVER_NAME'] ?? '';
         $url = $_SERVER['PHP_SELF'];
