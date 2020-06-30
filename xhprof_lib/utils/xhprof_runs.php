@@ -218,7 +218,7 @@ class XHProfRuns_Default implements iXHProfRuns {
         }
 
         //The Performance data is compressed lightly to avoid max row length
-        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] == 'php')) {
+        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer']) === 'php') {
             $contents = unserialize(gzuncompress($data['perfdata']));
         }
         else {
@@ -324,7 +324,7 @@ class XHProfRuns_Default implements iXHProfRuns {
             $run_id = $this->gen_run_id($type);
         }
 
-        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] == 'php')) {
+        if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer']) === 'php') {
             $sql['get'] = $this->db->escape(serialize($_GET));
             $sql['cookie'] = $this->db->escape(serialize($_COOKIE));
 
