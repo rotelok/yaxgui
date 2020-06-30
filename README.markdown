@@ -4,7 +4,7 @@ YaxGUI-NG (Yet another xhprof GUI)
 This is a graphical front end designed to store and present the profiling information provided by the tideways Extension.
 YaxGUI-NG only supports tideways because all other extensions seems to be abandoned.
 
-I forked the original sfeni/yaxgui that was a fork of preinheimer/xhprof itself a fork of of phacility/xhprof
+I forked the original sfeni/yaxgui that was a fork of preinheimer/xhprof itself a fork of phacility/xhprof
  my main objectives with this fork are:
 * Keep a cool tool alive
 * Modernization of the codebase 
@@ -33,11 +33,11 @@ Project Includes
 
 * It includes a header.php document you can use with PHP's auto\_prepend\_file directive. 
 It sets up profiling by initilizing a few variables, and settting register_shutdown_function with the footer. 
-Once started profiles are done when requested (?\_profile=1), or randomly. 
+Once started profiles are created when requested with (?\_profile=1), or randomly by setting the $weight variable in the config. 
 Profiled pages display a link to their profile results at the bottom of the page, by default this is disabled but can
-be enable for all urls, or with specific blacklist based for specific documents. e.g. pages generating XML, images, etc.
+be enabled for all urls or with a specific blacklist based for specific documents. e.g. pages generating XML, images, etc.
 
-* For tips on including header.php on an nginx + php-fpm install take a look at: http://www.justincarmony.com/blog/2012/04/23/php-fpm-nginx-php_value-and-multiple-values/
+* For tips on including header.php on a nginx + php-fpm install, take a look at: http://www.justincarmony.com/blog/2012/04/23/php-fpm-nginx-php_value-and-multiple-values/
 
 * The GUI is a bit prettier (Thanks to Graham Slater)
 
@@ -49,7 +49,7 @@ Key Features
 -------------
 
 * Listing 25, 50 most recent runs
-* Display most expensive (cpu), longest running, or highest memory usage runs for the day
+* Display most expensive (cpu), the longest running, or highest memory usage runs for the day
 
 * It introduces the concept of "Similar" URLs. Consider:
   * http://news.example.com/?story=23
@@ -64,7 +64,7 @@ Key Features
 Requirements
 ------------
 
-Besides a simple PHP running on your favourite web server you will also need following packages:
+Besides, a simple PHP running on your favourite web server you will also need following packages:
 
 * [tideways_xhprof](https://github.com/tideways/php-xhprof-extension)
 * php-mysqli or php-pdo
