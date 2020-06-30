@@ -5,7 +5,7 @@ function displayRuns($resultSet, $title = "")
     echo "<div class=\"runTitle\">$title</div>\n";
     echo "<table id=\"box-table-a\" class=\"tablesorter\" summary=\"Stats\"><thead><tr><th>Timestamp</th><th>Cpu</th><th>Wall Time</th><th>Peak Memory Usage</th><th>URL</th><th>Simplified URL</th></tr></thead>";
     echo "<tbody>\n";
-    while ($row = XHProfRuns_Default::getNextAssoc($resultSet)) {
+    while ($row = Rotelok\xhprof\XHProfRuns_Default::getNextAssoc($resultSet)) {
         $c_url = urlencode($row['c_url']);
         $url = urlencode($row['url']);
         $html['url'] = htmlentities($row['url'], ENT_QUOTES, 'UTF-8');
@@ -59,7 +59,7 @@ function showChart($rs, $flip = false)
     $arIDS = [];
     $arDateIDs = [];
 
-    while ($row = XHProfRuns_Default::getNextAssoc($rs)) {
+    while ($row = Rotelok\xhprof\XHProfRuns_Default::getNextAssoc($rs)) {
         $date[] = "'" . date("Y-m-d", $row['timestamp']) . "'";
 
         $arCPU[] = $row['cpu'];

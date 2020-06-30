@@ -47,20 +47,20 @@ $vbbar = ' class="vbbar"';
 $vrbar = ' class="vrbar"';
 $vgbar = ' class="vgbar"';
 
-$xhprof_runs_impl = new XHProfRuns_Default();
+$xhprof_runs_impl = new Rotelok\xhprof\XHProfRuns_Default();
 
 $domainFilter = getFilter('domain_filter');
 $serverFilter = getFilter('server_filter');
 
 $domainsRS = $xhprof_runs_impl->getDistinct(['column' => 'server name']);
 $domainFilterOptions = ["None"];
-while ($row = XHProfRuns_Default::getNextAssoc($domainsRS)) {
+while ($row = Rotelok\xhprof\XHProfRuns_Default::getNextAssoc($domainsRS)) {
     $domainFilterOptions[] = $row['server name'];
 }
 
 $serverRS = $xhprof_runs_impl->getDistinct(['column' => 'server_id']);
 $serverFilterOptions = ["None"];
-while ($row = XHProfRuns_Default::getNextAssoc($serverRS)) {
+while ($row = Rotelok\xhprof\XHProfRuns_Default::getNextAssoc($serverRS)) {
     $serverFilterOptions[] = $row['server_id'];
 }
 
@@ -158,7 +158,7 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     echo "<div class=\"runTitle\">Hardest Hit</div>\n";
     echo "<table id=\"box-table-a\" class=\"tablesorter\" summary=\"Stats\"><thead><tr><th>URL</th><th>Hits</th><th class=\"{sorter: 'numeric'}\">Total Wall Time</th><th>Avg Wall Time</th></tr></thead>";
     echo "<tbody>\n";
-    while ($row = XHProfRuns_Default::getNextAssoc($resultSet)) {
+    while ($row = Rotelok\xhprof\XHProfRuns_Default::getNextAssoc($resultSet)) {
         $url = urlencode($row['url']);
         $html['url'] = htmlentities($row['url'], ENT_QUOTES, 'UTF-8');
         echo "\t<tr><td><a href=\"?geturl={$url}\">{$html['url']}</a></td><td>{$row['count']}</td><td>" . number_format(

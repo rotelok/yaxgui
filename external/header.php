@@ -1,5 +1,6 @@
 <?php
-
+require_once __DIR__ . "/../Rotelok/xhprof/iXHProfRuns.php";
+require_once __DIR__ . "/../Rotelok/xhprof/XHProfRuns_Default.php";
 if (PHP_SAPI === 'cli') {
     $_SERVER['REMOTE_ADDR'] = null;
     $_SERVER['HTTP_HOST'] = null;
@@ -119,7 +120,7 @@ register_shutdown_function(
             } elseif (extension_loaded("tideways_xhprof")) {
                 $xhprof_data = tideways_xhprof_disable();
             }
-            $xhprof_runs = new XHProfRuns_Default();
+            $xhprof_runs = new Rotelok\xhprof\XHProfRuns_Default();
             $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace, null, $_xhprof);
             if ($_xhprof['display'] === true && PHP_SAPI !== 'cli' && !isset($isAjax)) {
                 // url to the XHProf UI libraries (change the host name and path)
