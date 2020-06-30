@@ -86,7 +86,7 @@ function showChart($rs, $flip = false)
 
 
     ob_start();
-    include __DIR__ . "/../templates/chart.phtml";
+    include __DIR__ . "/../../Rotelok/xhprof/Templates/chart.phtml";
     $stuff = ob_get_clean();
     return [$stuff, "<div id=\"container\" style=\"width: 1000px; height: 500px; margin: 0 auto\"></div>"];
 }

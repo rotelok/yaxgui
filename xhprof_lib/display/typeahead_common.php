@@ -37,7 +37,7 @@ $params = [
 ];
 
 // pull values of these params, and create named globals for each param
-xhprof_param_init($params);
+$XHProfLib->xhprof_param_init($params);
 
 if (!empty($run)) {
     // single run mode

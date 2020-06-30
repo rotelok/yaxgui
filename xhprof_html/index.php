@@ -1,8 +1,8 @@
 <?php
+require_once __DIR__ . "/../Rotelok/fakeAutoloader.php";
 
-require_once __DIR__ . "/../xhprof_lib/config.php";
-require_once __DIR__ . '/../xhprof_lib/display/xhprof.php';
-require __DIR__ . "/../xhprof_lib/utils/common.php";
+
+
 
 if ($controlIPs !== false && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
     die("You do not have permission to view this page.");
@@ -23,7 +23,7 @@ $params = [
 ];
 
 // pull values of these params, and create named globals for each param
-xhprof_param_init($params);
+$XHProfHTML->xhprof_param_init($params);
 
 /* reset params to be a array of variable names to values
    by the end of this page, param should only contain values that need
@@ -40,12 +40,7 @@ foreach ($params as $k => $v) {
 }
 
 
-$vbar = ' class="vbar"';
-$vwbar = ' class="vwbar"';
-$vwlbar = ' class="vwlbar"';
-$vbbar = ' class="vbbar"';
-$vrbar = ' class="vrbar"';
-$vgbar = ' class="vgbar"';
+
 
 $xhprof_runs_impl = new Rotelok\xhprof\XHProfRuns_Default();
 
@@ -73,9 +68,8 @@ if (!is_null($serverFilter)) {
 }
 $_xh_header = "";
 if (isset($_GET['run1']) || isset($_GET['run'])) {
-    include __DIR__ . "/../xhprof_lib/templates/header.phtml";
-    displayXHProfReport(
-        $xhprof_runs_impl,
+    include __DIR__ . "/../Rotelok/xhprof/Templates/header.phtml";
+    $XHProfHTML->displayXHProfReport(
         $params,
         $source,
         $run,
@@ -95,9 +89,9 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     [$header, $body] = showChart($rs, true);
     $_xh_header .= $header;
 
-    include __DIR__ . "/../xhprof_lib/templates/header.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/header.phtml";
     $rs = $xhprof_runs_impl->getRuns($criteria);
-    include __DIR__ . "/../xhprof_lib/templates/emptyBody.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/emptyBody.phtml";
 
     $url = htmlentities($_GET['geturl'], ENT_QUOTES, "UTF-8");
     displayRuns($rs, "Runs with URL: $url");
@@ -111,14 +105,14 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     $rs = $xhprof_runs_impl->getUrlStats($criteria);
     [$header, $body] = showChart($rs, true);
     $_xh_header .= $header;
-    include __DIR__ . "/../xhprof_lib/templates/header.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/header.phtml";
 
     $url = htmlentities($_GET['getcurl'], ENT_QUOTES, "UTF-8");
     $rs = $xhprof_runs_impl->getRuns($criteria);
-    include __DIR__ . "/../xhprof_lib/templates/emptyBody.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/emptyBody.phtml";
     displayRuns($rs, "Runs with Simplified URL: $url");
 } elseif (isset($_GET['getruns'])) {
-    include __DIR__ . "/../xhprof_lib/templates/header.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/header.phtml";
     $days = (int)$_GET['days'];
 
     switch ($_GET['getruns']) {
@@ -139,7 +133,7 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     $rs = $xhprof_runs_impl->getRuns($criteria);
     displayRuns($rs, "Worst runs by $load");
 } elseif (isset($_GET['hit'])) {
-    include __DIR__ . "/../xhprof_lib/templates/header.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/header.phtml";
     $last = $_GET['hit'] ?? 25;
     $last = (int)$last;
     $days = $_GET['days'] ?? 1;
@@ -198,7 +192,7 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     </script>
 CODESE;
 } else {
-    include __DIR__ . "/../xhprof_lib/templates/header.phtml";
+    include __DIR__ . "/../Rotelok/xhprof/Templates/header.phtml";
     $last = $_GET['last'] ?? 25;
     $last = (int)$last;
     $criteria['order by'] = "timestamp";
@@ -207,4 +201,4 @@ CODESE;
     displayRuns($rs, "Last $last Runs");
 }
 
-require __DIR__ . "/../xhprof_lib/templates/footer.phtml";
+require __DIR__ . "/../Rotelok/xhprof/Templates/footer.phtml";

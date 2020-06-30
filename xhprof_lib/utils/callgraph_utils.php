@@ -43,12 +43,12 @@ $xhprof_legal_image_types = [
 function xhprof_http_header($name, $value)
 {
     if (!$name) {
-        xhprof_error('http_header usage');
+        $XHProfLib->xhprof_error('http_header usage');
         return null;
     }
 
     if (!is_string($value)) {
-        xhprof_error('http_header value not a string');
+        $XHProfLib->xhprof_error('http_header value not a string');
     }
 
     header($name . ': ' . $value);
@@ -274,8 +274,8 @@ function xhprof_generate_dot_script(
     $max_sizing_ratio = 20;
 
     $totals = [];
-
-    $sym_table = xhprof_compute_flat_info($raw_data, $totals);
+    $XHProfLib = new \Rotelok\xhprof\XHProfLib();
+    $sym_table = $XHProfLib->xhprof_compute_flat_info($raw_data, $totals);
 
     if ($critical_path) {
         $children_table = xhprof_get_children_table($raw_data);
@@ -293,12 +293,12 @@ function xhprof_generate_dot_script(
                     }
                     if ($max_child === null
                         || abs(
-                            $raw_data[xhprof_build_parent_child_key(
+                            $raw_data[$XHProfLib->xhprof_build_parent_child_key(
                                 $node,
                                 $child
                             )]["wt"]
                         ) > abs(
-                            $raw_data[xhprof_build_parent_child_key(
+                            $raw_data[$XHProfLib->xhprof_build_parent_child_key(
                                 $node,
                                 $max_child
                             )]["wt"]
@@ -309,7 +309,7 @@ function xhprof_generate_dot_script(
                 }
                 if ($max_child !== null) {
                     $path[$max_child] = true;
-                    $path_edges[xhprof_build_parent_child_key($node, $max_child)] = true;
+                    $path_edges[$XHProfLib->xhprof_build_parent_child_key($node, $max_child)] = true;
                 }
                 $node = $max_child;
             } else {
@@ -319,7 +319,7 @@ function xhprof_generate_dot_script(
     }
 
     // if it is a benchmark callgraph, we make the benchmarked function the root.
-    if ($source == "bm" && array_key_exists("main()", $sym_table)) {
+    if ($source === "bm" && array_key_exists("main()", $sym_table)) {
         $total_times = $sym_table["main()"]["ct"];
         $remove_funcs = [
             "main()",
@@ -341,7 +341,7 @@ function xhprof_generate_dot_script(
     if (!empty($func)) {
         $interested_funcs = [];
         foreach ($raw_data as $parent_child => $info) {
-            [$parent, $child] = xhprof_parse_parent_child($parent_child);
+            [$parent, $child] = $XHProfLib->xhprof_parse_parent_child($parent_child);
             if ($parent == $func || $child == $func) {
                 $interested_funcs[$parent] = 1;
                 $interested_funcs[$child] = 1;
@@ -398,7 +398,7 @@ function xhprof_generate_dot_script(
         $width = ", width=" . sprintf("%.1f", $max_width / $sizing_factor);
         $height = ", height=" . sprintf("%.1f", $max_height / $sizing_factor);
 
-        if ($symbol == "main()") {
+        if ($symbol === "main()") {
             $shape = "octagon";
             $name = "Total: " . ($totals["wt"] / 1000.0) . " ms\\n";
             $name .= addslashes($page ?? $symbol);
@@ -453,7 +453,7 @@ function xhprof_generate_dot_script(
 
     // Generate all the edges' information.
     foreach ($raw_data as $parent_child => $info) {
-        [$parent, $child] = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = $XHProfLib->xhprof_parse_parent_child($parent_child);
 
         if (isset($sym_table[$parent], $sym_table[$child]) && (empty($func)
                 || (!empty($func) && ($parent == $func || $child == $func)))
@@ -480,7 +480,7 @@ function xhprof_generate_dot_script(
             $arrow_size = 1;
 
             if ($critical_path
-                && isset($path_edges[xhprof_build_parent_child_key($parent, $child)])
+                && isset($path_edges[$XHProfLib->xhprof_build_parent_child_key($parent, $child)])
             ) {
                 $linewidth = 10;
                 $arrow_size = 2;
@@ -514,12 +514,14 @@ function xhprof_render_diff_image(
     [$raw_data1, $a] = $xhprof_runs_impl->get_run($run1, $source, $desc_unused);
     [$raw_data2, $b] = $xhprof_runs_impl->get_run($run2, $source, $desc_unused);
 
+    $XHProfLib = new Rotelok\xhprof\XHProfLib();
+
     // init_metrics($raw_data1, null, null);
     $children_table1 = xhprof_get_children_table($raw_data1);
     $children_table2 = xhprof_get_children_table($raw_data2);
-    $symbol_tab1 = xhprof_compute_flat_info($raw_data1, $total1);
-    $symbol_tab2 = xhprof_compute_flat_info($raw_data2, $total2);
-    $run_delta = xhprof_compute_diff($raw_data1, $raw_data2);
+    $symbol_tab1 = $XHProfLib->xhprof_compute_flat_info($raw_data1, $total1);
+    $symbol_tab2 = $XHProfLib->xhprof_compute_flat_info($raw_data2, $total2);
+    $run_delta = $XHProfLib->xhprof_compute_diff($raw_data1, $raw_data2);
     $script = xhprof_generate_dot_script(
         $run_delta,
         $threshold,

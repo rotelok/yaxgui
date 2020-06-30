@@ -28,12 +28,11 @@
  * @author Changhao Jiang (cjiang@facebook.com)
  */
 require_once __DIR__ . "/../xhprof_lib/config.php";
+require_once __DIR__ . "/../xhprof_lib/utils/callgraph_utils.php";
 
 if ($controlIPs !== false && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
     die("You do not have permission to view this page.");
 }
-
-require_once __DIR__ . '/../xhprof_lib/display/xhprof.php';
 
 ini_set('max_execution_time', 100);
 
@@ -66,7 +65,7 @@ $params = [// run id param
 ];
 
 // pull values of these params, and create named globals for each param
-xhprof_param_init($params);
+$XHProfLib->xhprof_param_init($params);
 
 // if invalid value specified for threshold, then use the default
 if ($threshold < 0 || $threshold > 1) {
