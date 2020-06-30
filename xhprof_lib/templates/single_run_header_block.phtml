@@ -12,15 +12,10 @@ if ($display_calls) {
     $format_total = number_format($totals['ct']);
 }
 
-if (!isset($GLOBALS['_xhprof']['serializer']) || strtolower($GLOBALS['_xhprof']['serializer'] . 'php')) {
-    $cookieArr = unserialize($xhprof_runs_impl->run_details['cookie']);
-    $getArr = unserialize($xhprof_runs_impl->run_details['get']);
-    $postArr = unserialize($xhprof_runs_impl->run_details['post']);
-} else {
-    $cookieArr = json_decode($xhprof_runs_impl->run_details['cookie'], true);
-    $getArr = json_decode($xhprof_runs_impl->run_details['get'], true);
-    $postArr = json_decode($xhprof_runs_impl->run_details['post'], true);
-}
+$cookieArr = json_decode($xhprof_runs_impl->run_details['cookie'], true);
+$getArr = json_decode($xhprof_runs_impl->run_details['get'], true);
+$postArr = json_decode($xhprof_runs_impl->run_details['post'], true);
+
 
 //TODO This is lame
 global $comparative;
