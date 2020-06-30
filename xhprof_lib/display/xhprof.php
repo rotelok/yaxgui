@@ -1376,7 +1376,7 @@ function symbol_report(
         $base_info[$metric] = $symbol_info[$metric];
     }
     foreach ($run_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
         if (($child == $rep_symbol) && $parent) {
             $info_tmp = $info;
             $info_tmp["fn"] = $parent;
@@ -1401,7 +1401,7 @@ function symbol_report(
     $results = [];
     $base_ct = 0;
     foreach ($run_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
         if ($parent == $rep_symbol) {
             $info_tmp = $info;
             $info_tmp["fn"] = $child;
@@ -1594,7 +1594,7 @@ function displayXHProfReport(
 
         if (count($runs_array) == 1) {
             global $run_details;
-            list($xhprof_data, $run_details) = $xhprof_runs_impl->get_run(
+            [$xhprof_data, $run_details] = $xhprof_runs_impl->get_run(
                 $runs_array[0],
                 $source,
                 $description
@@ -1631,8 +1631,8 @@ function displayXHProfReport(
             $run_details
         );
     } elseif ($run1 && $run2) {                  // diff report for two runs
-        list($xhprof_data1, $run_details1) = $xhprof_runs_impl->get_run($run1, $source, $description1);
-        list($xhprof_data2, $run_details2) = $xhprof_runs_impl->get_run($run2, $source, $description2);
+        [$xhprof_data1, $run_details1] = $xhprof_runs_impl->get_run($run1, $source, $description1);
+        [$xhprof_data2, $run_details2] = $xhprof_runs_impl->get_run($run2, $source, $description2);
 
         profiler_diff_report(
             $url_params,

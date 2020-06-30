@@ -17,7 +17,7 @@ class visibilitator
     {
         $func_name = array_shift($arguments);
         if (is_array($func_name)) {
-            list($a, $b) = $func_name;
+            [$a, $b] = $func_name;
             if (count($arguments) == 0) {
                 $arguments = $arguments[0];
             }

@@ -190,7 +190,7 @@ function xhprof_trim_run($raw_data, $functions_to_keep)
 
     $new_raw_data = [];
     foreach ($raw_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
 
         if (isset($function_map[$parent]) || isset($function_map[$child])) {
             $new_raw_data[$parent_child] = $info;
@@ -446,7 +446,7 @@ function xhprof_compute_flat_info($raw_data, &$overall_totals)
 
     /* adjust exclusive times by deducting inclusive time of children */
     foreach ($raw_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
 
         if ($parent) {
             foreach ($metrics as $metric) {
@@ -535,7 +535,7 @@ function xhprof_compute_inclusive_times($raw_data)
      * function is called from.
      */
     foreach ($raw_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
 
         if ($parent == $child) {
             /*
@@ -628,7 +628,7 @@ function xhprof_prune_run($raw_data, $prune_percent)
     $flat_info = xhprof_compute_inclusive_times($raw_data);
 
     foreach ($raw_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
 
         // is this child's overall total from all parents less than threshold?
         if ($flat_info[$child][$prune_metric] < $prune_threshold) {
@@ -925,7 +925,7 @@ function xhprof_get_matching_functions($q, $xhprof_data)
     $matches = [];
 
     foreach ($xhprof_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
         if (stripos($parent, $q) !== false) {
             $matches[$parent] = 1;
         }

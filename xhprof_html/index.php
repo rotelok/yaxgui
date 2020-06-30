@@ -84,13 +84,13 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
         $run2
     );
 } elseif (isset($_GET['geturl'])) {
-    $last = isset($_GET['last']) ? $_GET['last'] : 100;
+    $last = $_GET['last'] ?? 100;
     $last = (int)$last;
     $criteria['url'] = $_GET['geturl'];
     $criteria['limit'] = $last;
     $criteria['order by'] = 'timestamp';
     $rs = $xhprof_runs_impl->getUrlStats($criteria);
-    list($header, $body) = showChart($rs, true);
+    [$header, $body] = showChart($rs, TRUE);
     $_xh_header .= $header;
 
     include __DIR__ . "/../xhprof_lib/templates/header.phtml";
@@ -100,14 +100,14 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     $url = htmlentities($_GET['geturl'], ENT_QUOTES, "UTF-8");
     displayRuns($rs, "Runs with URL: $url");
 } elseif (isset($_GET['getcurl'])) {
-    $last = isset($_GET['last']) ? $_GET['last'] : 100;
+    $last = $_GET['last'] ?? 100;
     $last = (int)$last;
     $criteria['c_url'] = $_GET['getcurl'];
     $criteria['limit'] = $last;
     $criteria['order by'] = 'timestamp';
 
     $rs = $xhprof_runs_impl->getUrlStats($criteria);
-    list($header, $body) = showChart($rs, true);
+    [$header, $body] = showChart($rs, TRUE);
     $_xh_header .= $header;
     include __DIR__ . "/../xhprof_lib/templates/header.phtml";
 
@@ -138,9 +138,9 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     displayRuns($rs, "Worst runs by $load");
 } elseif (isset($_GET['hit'])) {
     include __DIR__ . "/../xhprof_lib/templates/header.phtml";
-    $last = isset($_GET['hit']) ? $_GET['hit'] : 25;
+    $last = $_GET['hit'] ?? 25;
     $last = (int)$last;
-    $days = isset($_GET['days']) ? $_GET['days'] : 1;
+    $days = $_GET['days'] ?? 1;
     $days = (int)$days;
     if (isset($_GET['type']) && ($_GET['type'] === 'url' or $_GET['type'] = 'curl')) {
         $type = $_GET['type'];
@@ -195,7 +195,7 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
 CODESE;
 } else {
     include __DIR__ . "/../xhprof_lib/templates/header.phtml";
-    $last = isset($_GET['last']) ? $_GET['last'] : 25;
+    $last = $_GET['last'] ?? 25;
     $last = (int)$last;
     $criteria['order by'] = "timestamp";
     $criteria['limit'] = $last;

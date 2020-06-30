@@ -235,7 +235,7 @@ function xhprof_get_children_table($raw_data)
 {
     $children_table = [];
     foreach ($raw_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
         if (!isset($children_table[$parent])) {
             $children_table[$parent] = [$child];
         } else {
@@ -341,7 +341,7 @@ function xhprof_generate_dot_script(
     if (!empty($func)) {
         $interested_funcs = [];
         foreach ($raw_data as $parent_child => $info) {
-            list($parent, $child) = xhprof_parse_parent_child($parent_child);
+            [$parent, $child] = xhprof_parse_parent_child($parent_child);
             if ($parent == $func || $child == $func) {
                 $interested_funcs[$parent] = 1;
                 $interested_funcs[$child] = 1;
@@ -453,7 +453,7 @@ function xhprof_generate_dot_script(
 
     // Generate all the edges' information.
     foreach ($raw_data as $parent_child => $info) {
-        list($parent, $child) = xhprof_parse_parent_child($parent_child);
+        [$parent, $child] = xhprof_parse_parent_child($parent_child);
 
         if (isset($sym_table[$parent], $sym_table[$child]) && (empty($func)
             || (!empty($func) && ($parent == $func || $child == $func)))
@@ -511,8 +511,8 @@ function xhprof_render_diff_image(
     $total1 = [];
     $total2 = [];
 
-    list($raw_data1, $a) = $xhprof_runs_impl->get_run($run1, $source, $desc_unused);
-    list($raw_data2, $b) = $xhprof_runs_impl->get_run($run2, $source, $desc_unused);
+    [$raw_data1, $a] = $xhprof_runs_impl->get_run($run1, $source, $desc_unused);
+    [$raw_data2, $b] = $xhprof_runs_impl->get_run($run2, $source, $desc_unused);
 
     // init_metrics($raw_data1, null, null);
     $children_table1 = xhprof_get_children_table($raw_data1);
@@ -563,7 +563,7 @@ function xhprof_get_content_by_run(
         return "";
     }
 
-    list($raw_data, $a) = $xhprof_runs_impl->get_run($run_id, $source, $description);
+    [$raw_data, $a] = $xhprof_runs_impl->get_run($run_id, $source, $description);
     if (!$raw_data) {
         xhprof_error("Raw data is empty");
         return "";
