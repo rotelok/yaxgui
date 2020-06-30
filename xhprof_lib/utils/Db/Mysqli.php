@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/Abstract.php';
 
 class Db_Mysqli extends Db_Abstract
@@ -7,7 +8,7 @@ class Db_Mysqli extends Db_Abstract
     protected $db;
 
     /**
-     * @param  mysqli_result $resultSet
+     * @param mysqli_result $resultSet
      * @return array|null
      */
     public function getNextAssoc($resultSet)
@@ -16,7 +17,7 @@ class Db_Mysqli extends Db_Abstract
     }
 
     /**
-     * @param  string $field
+     * @param string $field
      * @return string
      */
     public function unixTimestamp($field)
@@ -25,7 +26,7 @@ class Db_Mysqli extends Db_Abstract
     }
 
     /**
-     * @param  int $days
+     * @param int $days
      * @return string
      */
     public function dateSub($days)
@@ -35,7 +36,12 @@ class Db_Mysqli extends Db_Abstract
 
     public function connect()
     {
-        $this->db = new mysqli($this->config['dbhost'], $this->config['dbuser'], $this->config['dbpass'], $this->config['dbname']);
+        $this->db = new mysqli(
+            $this->config['dbhost'],
+            $this->config['dbuser'],
+            $this->config['dbpass'],
+            $this->config['dbname']
+        );
         if ($this->db->connect_error) {
             xhprof_error("Could not connect to db");
             throw new RuntimeException("Unable to connect to database");
@@ -44,7 +50,7 @@ class Db_Mysqli extends Db_Abstract
     }
 
     /**
-     * @param  string $sql
+     * @param string $sql
      * @return bool|mysqli_result
      */
     public function query($sql)
@@ -53,7 +59,7 @@ class Db_Mysqli extends Db_Abstract
     }
 
     /**
-     * @param  string $str
+     * @param string $str
      * @return string
      */
     public function escape($str)

@@ -51,7 +51,6 @@ function printSeconds($time)
 
 function showChart($rs, $flip = false)
 {
-
     $dataPoints = "";
     $ids = [];
     $arCPU = [];

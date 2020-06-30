@@ -28,7 +28,8 @@
 require_once __DIR__ . '/../utils/xhprof_lib.php';
 
 // param name, its type, and default value
-$params = ['q' => [XHPROF_STRING_PARAM, ''],
+$params = [
+    'q' => [XHPROF_STRING_PARAM, ''],
     'run' => [XHPROF_STRING_PARAM, ''],
     'run1' => [XHPROF_STRING_PARAM, ''],
     'run2' => [XHPROF_STRING_PARAM, ''],

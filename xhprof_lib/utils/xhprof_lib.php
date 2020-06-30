@@ -33,13 +33,15 @@ function xhprof_error($message)
 function xhprof_get_possible_metrics()
 {
     static $possible_metrics =
-        ["wt" => ["Wall", "microsecs", "walltime"],
+        [
+            "wt" => ["Wall", "microsecs", "walltime"],
             "ut" => ["User", "microsecs", "user cpu time"],
             "st" => ["Sys", "microsecs", "system cpu time"],
             "cpu" => ["Cpu", "microsecs", "cpu time"],
             "mu" => ["MUse", "bytes", "memory usage"],
             "pmu" => ["PMUse", "bytes", "peak memory usage"],
-            "samples" => ["Samples", "samples", "cpu time"]];
+            "samples" => ["Samples", "samples", "cpu time"]
+        ];
     return $possible_metrics;
 }
 
@@ -50,7 +52,6 @@ function xhprof_get_possible_metrics()
  */
 function xhprof_get_metrics($xhprof_data)
 {
-
     // get list of valid metrics
     $possible_metrics = xhprof_get_possible_metrics();
 
@@ -91,10 +92,10 @@ function xhprof_parse_parent_child($parent_child)
  * Given parent & child function name, composes the key
  * in the format present in the raw data.
  *
- * @author Kannan
  * @param $parent
  * @param $child
  * @return string
+ * @author Kannan
  */
 function xhprof_build_parent_child_key($parent, $child)
 {
@@ -109,7 +110,7 @@ function xhprof_build_parent_child_key($parent, $child)
 /**
  * Checks if XHProf raw data appears to be valid and not corrupted.
  *
- * @param int   $run_id   Run id of run to be pruned.
+ * @param int $run_id Run id of run to be pruned.
  *                        [Used only for reporting
  *                        errors.]
  * @param array $raw_data XHProf raw data to be pruned
@@ -121,7 +122,6 @@ function xhprof_build_parent_child_key($parent, $child)
  */
 function xhprof_valid_run($run_id, $raw_data)
 {
-
     $main_info = $raw_data["main()"];
     if (empty($main_info)) {
         xhprof_error("XHProf: main() missing in raw data for Run ID: $run_id");
@@ -180,7 +180,6 @@ function xhprof_valid_run($run_id, $raw_data)
  */
 function xhprof_trim_run($raw_data, $functions_to_keep)
 {
-
     // convert list of functions to a hash with function as the key
     $function_map = array_fill_keys($functions_to_keep, 1);
 
@@ -205,14 +204,13 @@ function xhprof_trim_run($raw_data, $functions_to_keep)
  * of runs averages/nomalizes the data. Essentially the various metrics
  * collected are divided by $num_runs.
  *
- * @author Kannan
  * @param $raw_data
  * @param $num_runs
  * @return array
+ * @author Kannan
  */
 function xhprof_normalize_metrics($raw_data, $num_runs)
 {
-
     if (empty($raw_data) || ($num_runs == 0)) {
         return $raw_data;
     }
@@ -251,10 +249,10 @@ function xhprof_normalize_metrics($raw_data, $num_runs)
  *
  * @param object $xhprof_runs_impl An object that implements
  *                                 the iXHProfRuns interface
- * @param array  $runs             run ids of the XHProf runs..
- * @param array  $wts              integral (ideally) weights for $runs
- * @param string $source           source to fetch raw data for run from
- * @param bool   $use_script_name  If true, a fake edge from main() to
+ * @param array $runs run ids of the XHProf runs..
+ * @param array $wts integral (ideally) weights for $runs
+ * @param string $source source to fetch raw data for run from
+ * @param bool $use_script_name If true, a fake edge from main() to
  *                                 to __script::<scriptname> is
  *                                 introduced in the raw data so that
  *                                 after aggregations the script name
@@ -271,7 +269,6 @@ function xhprof_aggregate_runs(
     $source = "phprof",
     $use_script_name = false
 ) {
-
     $raw_data_total = null;
     $raw_data = null;
     $metrics = [];
@@ -282,8 +279,10 @@ function xhprof_aggregate_runs(
     if (($run_count == 0)
         || (($wts_count > 0) && ($run_count != $wts_count))
     ) {
-        return ['description' => 'Invalid input..',
-            'raw' => null];
+        return [
+            'description' => 'Invalid input..',
+            'raw' => null
+        ];
     }
 
     $bad_runs = [];
@@ -394,8 +393,8 @@ function xhprof_aggregate_runs(
  *
  * Also, store overall totals in the 2nd argument.
  *
- * @param  array $raw_data        XHProf format raw profiler data.
- * @param  array &$overall_totals OUT argument for returning
+ * @param array $raw_data XHProf format raw profiler data.
+ * @param array &$overall_totals OUT argument for returning
  *                                overall totals for various
  *                                metrics.
  * @return array Returns a map from function name to its
@@ -406,12 +405,12 @@ function xhprof_aggregate_runs(
  */
 function xhprof_compute_flat_info($raw_data, &$overall_totals)
 {
-
     global $display_calls;
 
     $metrics = xhprof_get_metrics($raw_data);
 
-    $overall_totals = ["ct" => 0,
+    $overall_totals = [
+        "ct" => 0,
         "wt" => 0,
         "ut" => 0,
         "st" => 0,
@@ -465,10 +464,10 @@ function xhprof_compute_flat_info($raw_data, &$overall_totals)
  * Hierarchical diff:
  * Compute and return difference of two call graphs: Run2 - Run1.
  *
- * @author Kannan
  * @param $xhprof_data1
  * @param $xhprof_data2
  * @return mixed
+ * @author Kannan
  */
 function xhprof_compute_diff($xhprof_data1, $xhprof_data2)
 {
@@ -594,7 +593,6 @@ function xhprof_compute_inclusive_times($raw_data)
  */
 function xhprof_prune_run($raw_data, $prune_percent)
 {
-
     $main_info = $raw_data["main()"];
     if (empty($main_info)) {
         xhprof_error("XHProf: main() missing in raw data");
@@ -662,11 +660,11 @@ function xhprof_prune_run($raw_data, $prune_percent)
 /**
  * Set one key in an array and return the array
  *
- * @author Kannan
  * @param $arr
  * @param $k
  * @param $v
  * @return mixed
+ * @author Kannan
  */
 function xhprof_array_set($arr, $k, $v)
 {
@@ -677,10 +675,10 @@ function xhprof_array_set($arr, $k, $v)
 /**
  * Removes/unsets one key in an array and return the array
  *
- * @author Kannan
  * @param $arr
  * @param $k
  * @return mixed
+ * @author Kannan
  */
 function xhprof_array_unset($arr, $k)
 {
@@ -724,10 +722,10 @@ function xhprof_get_param_helper($param)
  * string. If param is not specified, return the
  * $default value.
  *
- * @author Kannan
  * @param        $param
  * @param string $default
  * @return mixed|string
+ * @author Kannan
  */
 function xhprof_get_string_param($param, $default = '')
 {
@@ -752,10 +750,10 @@ function xhprof_get_string_param($param, $default = '')
  * If value is not a valid unsigned integer, logs error
  * and returns null.
  *
- * @author Kannan
  * @param     $param
  * @param int $default
  * @return string|null
+ * @author Kannan
  */
 function xhprof_get_uint_param($param, $default = 0)
 {
@@ -786,10 +784,10 @@ function xhprof_get_uint_param($param, $default = 0)
  * If value is not a valid unsigned integer, logs error
  * and returns null.
  *
- * @author Kannan
  * @param     $param
  * @param int $default
  * @return float|null
+ * @author Kannan
  */
 function xhprof_get_float_param($param, $default = 0)
 {
@@ -819,10 +817,10 @@ function xhprof_get_float_param($param, $default = 0)
  * If value is not a valid unsigned integer, logs error
  * and returns null.
  *
- * @author Kannan
  * @param      $param
  * @param bool $default
  * @return bool|null
+ * @author Kannan
  */
 function xhprof_get_bool_param($param, $default = false)
 {
@@ -875,8 +873,8 @@ function xhprof_get_bool_param($param, $default = false)
  *                       If a param is not specified in the
  *                       query string the default value is
  *                       used.
- * @author Kannan
  * @param $params
+ * @author Kannan
  */
 function xhprof_param_init($params)
 {
@@ -914,14 +912,13 @@ function xhprof_param_init($params)
  * specified XHProf run. This is used for the type ahead function
  * selector.
  *
- * @author Kannan
  * @param $q
  * @param $xhprof_data
  * @return array
+ * @author Kannan
  */
 function xhprof_get_matching_functions($q, $xhprof_data)
 {
-
     $matches = [];
 
     foreach ($xhprof_data as $parent_child => $info) {

@@ -1,4 +1,5 @@
 <?php
+
 if (PHP_SAPI === 'cli') {
     $_SERVER['REMOTE_ADDR'] = null;
     $_SERVER['HTTP_HOST'] = null;
@@ -97,13 +98,19 @@ if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_x
     include_once __DIR__ . '/../xhprof_lib/utils/xhprof_runs.php';
     if (extension_loaded("tideways")) {
         if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
-            tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS, ['ignored_functions' => $ignoredFunctions]);
+            tideways_enable(
+                TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY | TIDEWAYS_FLAGS_NO_SPANS,
+                ['ignored_functions' => $ignoredFunctions]
+            );
         } else {
             tideways_enable(TIDEWAYS_FLAGS_CPU | TIDEWAYS_FLAGS_MEMORY);
         }
     } elseif (extension_loaded("tideways_xhprof")) {
         if (isset($ignoredFunctions) && is_array($ignoredFunctions) && !empty($ignoredFunctions)) {
-            tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_NO_SPANS, ['ignored_functions' => $ignoredFunctions]);
+            tideways_xhprof_enable(
+                TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY | TIDEWAYS_XHPROF_FLAGS_NO_SPANS,
+                ['ignored_functions' => $ignoredFunctions]
+            );
         } else {
             tideways_xhprof_enable(TIDEWAYS_XHPROF_FLAGS_CPU | TIDEWAYS_XHPROF_FLAGS_MEMORY);
         }
@@ -116,7 +123,9 @@ if ((extension_loaded("tideways") || extension_loaded("tideways_xhprof")) && $_x
 register_shutdown_function(
     static function () {
         global $_xhprof;
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
+            $_SERVER['HTTP_X_REQUESTED_WITH']
+        ) === 'xmlhttprequest') {
             $isAjax = true;
         }
 

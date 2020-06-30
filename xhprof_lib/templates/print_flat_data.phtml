@@ -1,4 +1,6 @@
-<h3 align=center><?php echo $title; ?><?php echo $display_link; ?></h3><br>
+<h3 align=center><?php
+    echo $title; ?><?php
+    echo $display_link; ?></h3><br>
 <table border=1 cellpadding=2 cellspacing=1 width="90%" rules=rows bordercolor="#bdc7d8" align=center>
     <tr bgcolor="#bdc7d8" align=right>
 <?php
@@ -8,15 +10,13 @@ foreach ($stats as $stat) {
         $href = "$base_path/?"
             . http_build_query(xhprof_array_set($url_params, 'sort', $stat));
         $header = xhprof_render_link($desc, $href);
-    }
-    else {
+    } else {
         $header = $desc;
     }
 
     if ($stat == "fn") {
         print("<th align=left><nobr>$header</th>");
-    }
-    else {
+    } else {
         print("<th " . $vwbar . "><nobr>$header</th>");
     }
 }
@@ -27,8 +27,7 @@ if ($limit >= 0) {
     for ($i = 0; $i < $limit; $i++) {
         print_function_info($url_params, $flat_data[$i], $sort, $run1, $run2);
     }
-}
-else {
+} else {
     // if $limit is negative, print abs($limit) items starting from the end
     $limit = min($size, abs($limit));
     for ($i = 0; $i < $limit; $i++) {

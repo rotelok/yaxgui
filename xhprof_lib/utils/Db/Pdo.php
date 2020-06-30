@@ -1,17 +1,18 @@
 <?php
+
 require_once __DIR__ . '/Abstract.php';
 
 class Db_Pdo extends Db_Abstract
 {
-    /* @var PDOStatement */
-    private $curStmt;
     /**
      * @var PDO
      */
     public $db;
+    /* @var PDOStatement */
+    private $curStmt;
 
     /**
-     * @param  PDOStatement $resultSet
+     * @param PDOStatement $resultSet
      * @return mixed
      */
     public function getNextAssoc($resultSet)
@@ -20,7 +21,7 @@ class Db_Pdo extends Db_Abstract
     }
 
     /**
-     * @param  string $field
+     * @param string $field
      * @return string
      */
     public function unixTimestamp($field)
@@ -29,7 +30,7 @@ class Db_Pdo extends Db_Abstract
     }
 
     /**
-     * @param  int $days
+     * @param int $days
      * @return string
      */
     public function dateSub($days)
@@ -39,7 +40,7 @@ class Db_Pdo extends Db_Abstract
 
     public function connect()
     {
-        $connectionString = $this->config['dbtype'] . ':host=' . $this->config['dbhost'] . ';dbname=' . $this->config['dbname'].";charset=utf8mb4";
+        $connectionString = $this->config['dbtype'] . ':host=' . $this->config['dbhost'] . ';dbname=' . $this->config['dbname'] . ";charset=utf8mb4";
         $this->db = new PDO($connectionString, $this->config['dbuser'], $this->config['dbpass']);
         if ($this->db === false) {
             xhprof_error("Could not connect to db");
@@ -49,7 +50,7 @@ class Db_Pdo extends Db_Abstract
     }
 
     /**
-     * @param  string $sql
+     * @param string $sql
      * @return false|PDOStatement
      */
     public function query($sql)
@@ -59,7 +60,7 @@ class Db_Pdo extends Db_Abstract
     }
 
     /**
-     * @param  string $str
+     * @param string $str
      * @return string
      */
     public function escape($str)

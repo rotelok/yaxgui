@@ -1,4 +1,5 @@
 <?php
+
 $_xhprof = [];
 
 // Change these:
@@ -69,7 +70,7 @@ if (getenv('xhprof_weight')) {
  * Simplified URL for display and comparison purposes. A good simplified URL would be:
  * http://example.org/stories.php?id=
  *
- * @param  string $url The URL to be simplified
+ * @param string $url The URL to be simplified
  * @return string The simplified URL
  */
 function _urlSimilartor($url)

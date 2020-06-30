@@ -42,7 +42,6 @@ $xhprof_legal_image_types = [
  */
 function xhprof_http_header($name, $value)
 {
-
     if (!$name) {
         xhprof_error('http_header usage');
         return null;
@@ -269,7 +268,6 @@ function xhprof_generate_dot_script(
     $right = null,
     $left = null
 ) {
-
     $max_width = 5;
     $max_height = 3.5;
     $max_fontsize = 35;
@@ -299,7 +297,7 @@ function xhprof_generate_dot_script(
                                 $node,
                                 $child
                             )]["wt"]
-                        ) >abs(
+                        ) > abs(
                             $raw_data[xhprof_build_parent_child_key(
                                 $node,
                                 $max_child
@@ -323,10 +321,12 @@ function xhprof_generate_dot_script(
     // if it is a benchmark callgraph, we make the benchmarked function the root.
     if ($source == "bm" && array_key_exists("main()", $sym_table)) {
         $total_times = $sym_table["main()"]["ct"];
-        $remove_funcs = ["main()",
+        $remove_funcs = [
+            "main()",
             "hotprofiler_disable",
             "call_user_func_array",
-            "xhprof_disable"];
+            "xhprof_disable"
+        ];
 
         foreach ($remove_funcs as $cur_del_func) {
             if (array_key_exists($cur_del_func, $sym_table)
@@ -456,7 +456,7 @@ function xhprof_generate_dot_script(
         [$parent, $child] = xhprof_parse_parent_child($parent_child);
 
         if (isset($sym_table[$parent], $sym_table[$child]) && (empty($func)
-            || (!empty($func) && ($parent == $func || $child == $func)))
+                || (!empty($func) && ($parent == $func || $child == $func)))
         ) {
             $label = $info["ct"] == 1 ? $info["ct"] . " call" : $info["ct"] . " calls";
 
@@ -539,7 +539,7 @@ function xhprof_render_diff_image(
 /**
  * Generate image content from phprof run id.
  *
- * @param object $xhprof_runs_impl                                                            An object that implements
+ * @param object $xhprof_runs_impl An object that implements
  *                                                                                            the iXHProfRuns interface
  * @param        $run_id
  * @param        $type
@@ -584,7 +584,7 @@ function xhprof_get_content_by_run(
 /**
  * Generate image from phprof run id and send it to client.
  *
- * @param object $xhprof_runs_impl                                                            An object that implements
+ * @param object $xhprof_runs_impl An object that implements
  *                                                                                            the iXHProfRuns interface
  * @param        $run_id
  * @param        $type
@@ -603,7 +603,6 @@ function xhprof_render_image(
     $source,
     $critical_path
 ) {
-
     $content = xhprof_get_content_by_run(
         $xhprof_runs_impl,
         $run_id,

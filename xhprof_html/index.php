@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . "/../xhprof_lib/config.php";
 require_once __DIR__ . '/../xhprof_lib/display/xhprof.php';
 require __DIR__ . "/../xhprof_lib/utils/common.php";
@@ -10,7 +11,8 @@ if ($controlIPs !== false && !in_array($_SERVER['REMOTE_ADDR'], $controlIPs)) {
 unset($controlIPs);
 
 // param name, its type, and default value
-$params = ['run' => [XHPROF_STRING_PARAM, ''],
+$params = [
+    'run' => [XHPROF_STRING_PARAM, ''],
     'wts' => [XHPROF_STRING_PARAM, ''],
     'symbol' => [XHPROF_STRING_PARAM, ''],
     'sort' => [XHPROF_STRING_PARAM, 'wt'], // wall time
@@ -90,7 +92,7 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     $criteria['limit'] = $last;
     $criteria['order by'] = 'timestamp';
     $rs = $xhprof_runs_impl->getUrlStats($criteria);
-    [$header, $body] = showChart($rs, TRUE);
+    [$header, $body] = showChart($rs, true);
     $_xh_header .= $header;
 
     include __DIR__ . "/../xhprof_lib/templates/header.phtml";
@@ -107,7 +109,7 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     $criteria['order by'] = 'timestamp';
 
     $rs = $xhprof_runs_impl->getUrlStats($criteria);
-    [$header, $body] = showChart($rs, TRUE);
+    [$header, $body] = showChart($rs, true);
     $_xh_header .= $header;
     include __DIR__ . "/../xhprof_lib/templates/header.phtml";
 
@@ -159,7 +161,9 @@ if (isset($_GET['run1']) || isset($_GET['run'])) {
     while ($row = XHProfRuns_Default::getNextAssoc($resultSet)) {
         $url = urlencode($row['url']);
         $html['url'] = htmlentities($row['url'], ENT_QUOTES, 'UTF-8');
-        echo "\t<tr><td><a href=\"?geturl={$url}\">{$html['url']}</a></td><td>{$row['count']}</td><td>" . number_format($row['total_wall']) . " ms</td><td>" . number_format($row['avg_wall']) . " ms</td></tr>\n";
+        echo "\t<tr><td><a href=\"?geturl={$url}\">{$html['url']}</a></td><td>{$row['count']}</td><td>" . number_format(
+            $row['total_wall']
+        ) . " ms</td><td>" . number_format($row['avg_wall']) . " ms</td></tr>\n";
     }
     echo "</tbody>\n";
     echo "</table>\n";

@@ -62,8 +62,7 @@
                 foreach ($data_copy as $dataPoint) {
                     if (++$iterations > 14) {
                         $other += $dataPoint['excl_wt'];
-                    }
-                    else {
+                    } else {
                         echo "['" . addslashes($dataPoint['fn']) . "', {$dataPoint['excl_wt']}],\n";
                     }
                 }

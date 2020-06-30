@@ -53,7 +53,6 @@ $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), "/");
  */
 function xhprof_include_js_css($ui_dir_url_path = null)
 {
-
     if (empty($ui_dir_url_path)) {
         $ui_dir_url_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), "/");
     }
@@ -159,7 +158,6 @@ function xhprof_render_link(
     $onmouseout = '',
     $onmousedown = ''
 ) {
-
     if (!$content) {
         return '';
     }
@@ -223,7 +221,8 @@ $diff_mode = false;
 $display_calls = true;
 
 // The following column headers are sortable
-$sortable_columns = ["fn" => 1,
+$sortable_columns = [
+    "fn" => 1,
     "ct" => 1,
     "wt" => 1,
     "excl_wt" => 1,
@@ -389,10 +388,10 @@ $metrics = null;
  * tuples) that compares array elements based on the sort column
  * specified in $sort_col (global parameter).
  *
- * @author Kannan
  * @param $a
  * @param $b
  * @return int
+ * @author Kannan
  */
 function sort_cbk($a, $b)
 {
@@ -430,11 +429,11 @@ function sort_cbk($a, $b)
  * Initialize the metrics we'll display based on the information
  * in the raw data.
  *
- * @author Kannan
  * @param      $xhprof_data
  * @param      $rep_symbol
  * @param      $sort
  * @param bool $diff_report
+ * @author Kannan
  */
 function init_metrics($xhprof_data, $rep_symbol, $sort, $diff_report = false)
 {
@@ -511,9 +510,9 @@ function init_metrics($xhprof_data, $rep_symbol, $sort, $diff_report = false)
  * (depending upon whether we are in diff report mode
  * or single run report mode).
  *
- * @author Kannan
  * @param $stat
  * @return mixed|string
+ * @author Kannan
  */
 function stat_description($stat)
 {
@@ -533,16 +532,16 @@ function stat_description($stat)
  * Analyze raw data & generate the profiler report
  * (common for both single run mode and diff mode).
  *
- * @author: Kannan
  * @param        $url_params
  * @param        $rep_symbol
  * @param        $sort
  * @param        $run1
  * @param        $run1_desc
  * @param        $run1_data
- * @param int    $run2
+ * @param int $run2
  * @param string $run2_desc
- * @param array  $run2_data
+ * @param array $run2_data
+ * @author: Kannan
  */
 function profiler_report(
     $url_params,
@@ -675,8 +674,8 @@ function profiler_report(
 
         /* single function report with parent/child information */
         if ($diff_mode) {
-            $info1 = $symbol_tab1[$rep_symbol] ?? NULL;
-            $info2 = $symbol_tab2[$rep_symbol] ?? NULL;
+            $info1 = $symbol_tab1[$rep_symbol] ?? null;
+            $info2 = $symbol_tab2[$rep_symbol] ?? null;
             symbol_report(
                 $url_params,
                 $run_delta,
@@ -764,7 +763,6 @@ function get_print_class($num, $bold)
  */
 function print_td_num($num, $fmt_func, $bold = false, $attributes = null)
 {
-
     $class = get_print_class($num, $bold);
 
     if (!empty($fmt_func)) {
@@ -801,12 +799,12 @@ function print_td_pct($numer, $denom, $bold = false, $attributes = null)
 /**
  * Print "flat" data corresponding to one function.
  *
- * @author Kannan
  * @param $url_params
  * @param $info
  * @param $sort
  * @param $run1
  * @param $run2
+ * @author Kannan
  */
 function print_function_info($url_params, $info, $sort, $run1, $run2)
 {
@@ -880,7 +878,6 @@ function print_function_info($url_params, $info, $sort, $run1, $run2)
 /**
  * Print non-hierarchical (flat-view) of profiler data.
  *
- * @author Kannan
  * @param $url_params
  * @param $title
  * @param $flat_data
@@ -888,10 +885,10 @@ function print_function_info($url_params, $info, $sort, $run1, $run2)
  * @param $run1
  * @param $run2
  * @param $limit
+ * @author Kannan
  */
 function print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $limit)
 {
-
     global $stats;
     global $sortable_columns;
     global $vwbar;
@@ -921,7 +918,23 @@ function print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $
     usort($data_copy, 'sortWT');
 
     $iterations = 0;
-    $colors = ['#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92', '#EAFEBB', '#FEB4B1', '#2B6979', '#E9D6FE', '#FECDA3', '#FED980'];
+    $colors = [
+        '#4572A7',
+        '#AA4643',
+        '#89A54E',
+        '#80699B',
+        '#3D96AE',
+        '#DB843D',
+        '#92A8CD',
+        '#A47D7C',
+        '#B5CA92',
+        '#EAFEBB',
+        '#FEB4B1',
+        '#2B6979',
+        '#E9D6FE',
+        '#FECDA3',
+        '#FED980'
+    ];
     foreach ($data_copy as $datapoint) {
         if (++$iterations > 14) {
             $function_color[$datapoint['fn']] = $colors[14];
@@ -945,13 +958,13 @@ function sortWT($a, $b)
 /**
  * Generates a tabular report for all functions. This is the top-level report.
  *
- * @author Kannan
  * @param $url_params
  * @param $symbol_tab
  * @param $sort
  * @param $run1
  * @param $run2
  * @param $links
+ * @author Kannan
  */
 function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links)
 {
@@ -1036,11 +1049,11 @@ function get_tooltip_attributes($type, $metric)
  * Print info for a parent or child function in the
  * parent & children report.
  *
- * @author Kannan
  * @param $info
  * @param $base_ct
  * @param $base_info
  * @param $parent
+ * @author Kannan
  */
 function pc_info($info, $base_ct, $base_info, $parent)
 {
@@ -1131,7 +1144,6 @@ function print_pc_array(
 
 function print_symbol_summary($symbol_info, $stat, $base)
 {
-
     $val = $symbol_info[$stat];
     $desc = str_replace("<br />", " ", stat_description($stat));
 
@@ -1148,7 +1160,6 @@ function print_symbol_summary($symbol_info, $stat, $base)
 /**
  * Generates a report for a single function/symbol.
  *
- * @author Kannan
  * @param      $url_params
  * @param      $run_data
  * @param      $symbol_info
@@ -1156,8 +1167,9 @@ function print_symbol_summary($symbol_info, $stat, $base)
  * @param      $rep_symbol
  * @param      $run1
  * @param null $symbol_info1
- * @param int  $run2
+ * @param int $run2
  * @param null $symbol_info2
+ * @author Kannan
  */
 function symbol_report(
     $url_params,
@@ -1460,7 +1472,6 @@ function symbol_report(
 /**
  * Generate the profiler report for a single run.
  *
- * @author Kannan
  * @param      $url_params
  * @param      $xhprof_data
  * @param      $run_desc
@@ -1468,6 +1479,7 @@ function symbol_report(
  * @param      $sort
  * @param      $run
  * @param null $run_details
+ * @author Kannan
  */
 function profiler_single_run_report(
     $url_params,
@@ -1478,7 +1490,6 @@ function profiler_single_run_report(
     $run,
     $run_details = null
 ) {
-
     init_metrics($xhprof_data, $rep_symbol, $sort);
 
     profiler_report(
@@ -1496,7 +1507,6 @@ function profiler_single_run_report(
 /**
  * Generate the profiler report for diff mode (delta between two runs).
  *
- * @author Kannan
  * @param $url_params
  * @param $xhprof_data1
  * @param $run1_desc
@@ -1506,6 +1516,7 @@ function profiler_single_run_report(
  * @param $sort
  * @param $run1
  * @param $run2
+ * @author Kannan
  */
 function profiler_diff_report(
     $url_params,
@@ -1518,8 +1529,6 @@ function profiler_diff_report(
     $run1,
     $run2
 ) {
-
-
     // Initialize what metrics we'll display based on data in Run2
     init_metrics($xhprof_data2, $rep_symbol, $sort, true);
 
@@ -1545,32 +1554,32 @@ function profiler_diff_report(
  * @param object $xhprof_runs_impl An object that implements
  *                                 the iXHProfRuns interface
  *                                 .
- * @param array  $url_params       Array of non-default URL params.
+ * @param array $url_params Array of non-default URL params.
  *
- * @param string $source           Category/type of the run. The source in
+ * @param string $source Category/type of the run. The source in
  *                                 combination with the run id uniquely
  *                                 determines a profiler run.
  *
- * @param string $run              run id, or comma separated sequence of
+ * @param string $run run id, or comma separated sequence of
  *                                 run ids. The latter is used if an
  *                                 aggregate report of the runs is
  *                                 desired.
  *
- * @param string $wts              Comma separate list of integers.
+ * @param string $wts Comma separate list of integers.
  *                                 Represents the weighted ratio in
  *                                 which which a set of runs will
  *                                 be aggregated. [Used only for
  *                                 aggregate reports.]
  *
- * @param string $symbol           Function symbol. If non-empty then the
+ * @param string $symbol Function symbol. If non-empty then the
  *                                 parent/child view of this function is
  *                                 displayed. If empty, a flat-profile
  *                                 view of the functions is displayed.
  *
  * @param        $sort
- * @param string $run1             Base run id (for diff reports)
+ * @param string $run1 Base run id (for diff reports)
  *
- * @param string $run2             New run id (for diff reports)
+ * @param string $run2 New run id (for diff reports)
  */
 function displayXHProfReport(
     $xhprof_runs_impl,
@@ -1583,7 +1592,6 @@ function displayXHProfReport(
     $run1,
     $run2
 ) {
-
     if ($run) {                              // specific run to display?
         // run may be a single run or a comma separate list of runs
         // that'll be aggregated. If "wts" (a comma separated list

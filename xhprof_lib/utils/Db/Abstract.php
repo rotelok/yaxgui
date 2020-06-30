@@ -11,13 +11,13 @@ abstract class Db_Abstract
     }
 
     /**
-     * @param  string $field
+     * @param string $field
      * @return string
      */
     abstract public function unixTimestamp($field);
 
     /**
-     * @param  int $days
+     * @param int $days
      * @return string
      */
     abstract public function dateSub($days);
@@ -31,13 +31,13 @@ abstract class Db_Abstract
     abstract public function connect();
 
     /**
-     * @param  string $sql
+     * @param string $sql
      * @return string
      */
     abstract public function query($sql);
 
     /**
-     * @param  string $str
+     * @param string $str
      * @return string
      */
     abstract public function escape($str);
