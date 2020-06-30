@@ -48,6 +48,8 @@ $base_path = rtrim(dirname($_SERVER['SCRIPT_NAME']), "/");
  * caller must provide the URL path to 'xhprof_html' directory
  * so that the correct location of the style sheets/javascript
  * can be specified in the generated HTML.
+ *
+ * @param null $ui_dir_url_path
  */
 function xhprof_include_js_css($ui_dir_url_path = null)
 {
@@ -109,6 +111,8 @@ function xhprof_percent_format($s, $precision = 1)
 /**
  * Implodes the text for a bunch of actions (such as links, forms,
  * into a HTML list and returns the text.
+ * @param $actions
+ * @return string
  */
 function xhprof_render_actions($actions)
 {
@@ -127,20 +131,19 @@ function xhprof_render_actions($actions)
 
 
 /**
- * @param html-str $content     the text/image/innerhtml/whatever for the link
- * @param raw-str  $href
- * @param raw-str  $class
- * @param raw-str  $id
- * @param raw-str  $title
- * @param raw-str  $target
- * @param raw-str  $onclick
- * @param raw-str  $style
- * @param raw-str  $access
- * @param raw-str  $onmouseover
- * @param raw-str  $onmouseout
- * @param raw-str  $onmousedown
- * @param raw-str  $dir
- * @param raw-str  $rel
+ * @param        $content
+ * @param        $href
+ * @param string $class
+ * @param string $id
+ * @param string $title
+ * @param string $target
+ * @param string $onclick
+ * @param string $style
+ * @param string $access
+ * @param string $onmouseover
+ * @param string $onmouseout
+ * @param string $onmousedown
+ * @return string
  */
 function xhprof_render_link(
     $content,
@@ -387,6 +390,9 @@ $metrics = null;
  * specified in $sort_col (global parameter).
  *
  * @author Kannan
+ * @param $a
+ * @param $b
+ * @return int
  */
 function sort_cbk($a, $b)
 {
@@ -425,6 +431,10 @@ function sort_cbk($a, $b)
  * in the raw data.
  *
  * @author Kannan
+ * @param      $xhprof_data
+ * @param      $rep_symbol
+ * @param      $sort
+ * @param bool $diff_report
  */
 function init_metrics($xhprof_data, $rep_symbol, $sort, $diff_report = false)
 {
@@ -502,6 +512,8 @@ function init_metrics($xhprof_data, $rep_symbol, $sort, $diff_report = false)
  * or single run report mode).
  *
  * @author Kannan
+ * @param $stat
+ * @return mixed|string
  */
 function stat_description($stat)
 {
@@ -522,6 +534,15 @@ function stat_description($stat)
  * (common for both single run mode and diff mode).
  *
  * @author: Kannan
+ * @param        $url_params
+ * @param        $rep_symbol
+ * @param        $sort
+ * @param        $run1
+ * @param        $run1_desc
+ * @param        $run1_data
+ * @param int    $run2
+ * @param string $run2_desc
+ * @param array  $run2_data
  */
 function profiler_report(
     $url_params,
@@ -688,6 +709,9 @@ function profiler_report(
 /**
  * Computes percentage for a pair of values, and returns it
  * in string format.
+ * @param $a
+ * @param $b
+ * @return float|int|string
  */
 function pct($a, $b)
 {
@@ -704,6 +728,9 @@ function pct($a, $b)
  * For instance, negative numbers in diff reports comparing two runs (run1 & run2)
  * represent improvement from run1 to run2. We use green to display those deltas,
  * and red for regression deltas.
+ * @param $num
+ * @param $bold
+ * @return string
  */
 function get_print_class($num, $bold)
 {
@@ -732,6 +759,10 @@ function get_print_class($num, $bold)
 
 /**
  * Prints a <td> element with a numeric value.
+ * @param      $num
+ * @param      $fmt_func
+ * @param bool $bold
+ * @param null $attributes
  */
 function print_td_num($num, $fmt_func, $bold = false, $attributes = null)
 {
@@ -747,6 +778,10 @@ function print_td_num($num, $fmt_func, $bold = false, $attributes = null)
 
 /**
  * Prints a <td> element with a pecentage.
+ * @param      $numer
+ * @param      $denom
+ * @param bool $bold
+ * @param null $attributes
  */
 function print_td_pct($numer, $denom, $bold = false, $attributes = null)
 {
@@ -769,6 +804,11 @@ function print_td_pct($numer, $denom, $bold = false, $attributes = null)
  * Print "flat" data corresponding to one function.
  *
  * @author Kannan
+ * @param $url_params
+ * @param $info
+ * @param $sort
+ * @param $run1
+ * @param $run2
  */
 function print_function_info($url_params, $info, $sort, $run1, $run2)
 {
@@ -843,6 +883,13 @@ function print_function_info($url_params, $info, $sort, $run1, $run2)
  * Print non-hierarchical (flat-view) of profiler data.
  *
  * @author Kannan
+ * @param $url_params
+ * @param $title
+ * @param $flat_data
+ * @param $sort
+ * @param $run1
+ * @param $run2
+ * @param $limit
  */
 function print_flat_data($url_params, $title, $flat_data, $sort, $run1, $run2, $limit)
 {
@@ -901,6 +948,12 @@ function sortWT($a, $b)
  * Generates a tabular report for all functions. This is the top-level report.
  *
  * @author Kannan
+ * @param $url_params
+ * @param $symbol_tab
+ * @param $sort
+ * @param $run1
+ * @param $run2
+ * @param $links
  */
 function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links)
 {
@@ -972,6 +1025,9 @@ function full_report($url_params, $symbol_tab, $sort, $run1, $run2, $links)
 
 /**
  * Return attribute names and values to be used by javascript tooltip.
+ * @param $type
+ * @param $metric
+ * @return string
  */
 function get_tooltip_attributes($type, $metric)
 {
@@ -983,6 +1039,10 @@ function get_tooltip_attributes($type, $metric)
  * parent & children report.
  *
  * @author Kannan
+ * @param $info
+ * @param $base_ct
+ * @param $base_info
+ * @param $parent
  */
 function pc_info($info, $base_ct, $base_info, $parent)
 {
@@ -1091,6 +1151,15 @@ function print_symbol_summary($symbol_info, $stat, $base)
  * Generates a report for a single function/symbol.
  *
  * @author Kannan
+ * @param      $url_params
+ * @param      $run_data
+ * @param      $symbol_info
+ * @param      $sort
+ * @param      $rep_symbol
+ * @param      $run1
+ * @param null $symbol_info1
+ * @param int  $run2
+ * @param null $symbol_info2
  */
 function symbol_report(
     $url_params,
@@ -1394,6 +1463,13 @@ function symbol_report(
  * Generate the profiler report for a single run.
  *
  * @author Kannan
+ * @param      $url_params
+ * @param      $xhprof_data
+ * @param      $run_desc
+ * @param      $rep_symbol
+ * @param      $sort
+ * @param      $run
+ * @param null $run_details
  */
 function profiler_single_run_report(
     $url_params,
@@ -1423,6 +1499,15 @@ function profiler_single_run_report(
  * Generate the profiler report for diff mode (delta between two runs).
  *
  * @author Kannan
+ * @param $url_params
+ * @param $xhprof_data1
+ * @param $run1_desc
+ * @param $xhprof_data2
+ * @param $run2_desc
+ * @param $rep_symbol
+ * @param $sort
+ * @param $run1
+ * @param $run2
  */
 function profiler_diff_report(
     $url_params,
@@ -1484,6 +1569,7 @@ function profiler_diff_report(
  *                                 displayed. If empty, a flat-profile
  *                                 view of the functions is displayed.
  *
+ * @param        $sort
  * @param string $run1             Base run id (for diff reports)
  *
  * @param string $run2             New run id (for diff reports)

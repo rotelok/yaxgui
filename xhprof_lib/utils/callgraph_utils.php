@@ -36,6 +36,9 @@ $xhprof_legal_image_types = [
  *
  * @param string  HTTP header name, like 'Location'
  * @param string  HTTP header value, like 'http://www.example.com/'
+ *
+ * @return null
+ * @return null
  */
 function xhprof_http_header($name, $value)
 {
@@ -54,6 +57,9 @@ function xhprof_http_header($name, $value)
 
 /**
  * Genearte and send MIME header for the output image to client browser.
+ *
+ * @param $type
+ * @param $length
  *
  * @author cjiang
  */
@@ -86,12 +92,14 @@ function xhprof_generate_mime_header($type, $length)
  * with "dot" command and pipe the "dot_script" to it and pipe out the
  * generated image content.
  *
- * @param    dot_script, string, the script for DOT to generate the image.
- * @param    type, one of the supported image types, see
- * $xhprof_legal_image_types.
+ * @param dot_script, string, the script for DOT to generate the image.
+ * @param type, one of the supported image types, see
+ *           $xhprof_legal_image_types.
  * @returns, binary content of the generated image on success. empty string on
  *           failure.
  *
+ * @return false|string
+ * @return false|string
  * @author cjiang
  */
 function xhprof_generate_image_by_dot($dot_script, $type)
@@ -158,13 +166,15 @@ function xhprof_generate_image_by_dot($dot_script, $type)
  * creating and writing to temp-files and reading them in again ...
  * not really nice but functional
  *
- * @param    dot_script, string, the script for DOT to generate the image.
- * @param    type, one of the supported image types, see
- * @param    errorFile, string, the file to write errors to
- * @param    tmpDirectory, string, the directory for temporary created files
- * @param    dotBin, the dot-binary file (e.g. dot.exe)
+ * @param dot_script, string, the script for DOT to generate the image.
+ * @param type, one of the supported image types, see
+ * @param errorFile, string, the file to write errors to
+ * @param tmpDirectory, string, the directory for temporary created files
+ * @param dotBin, the dot-binary file (e.g. dot.exe)
  * @returns, binary content of the generated image on success.
  *
+ * @return false|string
+ * @return false|string
  * @author Benjamin Carl <opensource@clickalicious.de>
  */
 function xhprof_generate_image_by_dot_on_win(
@@ -238,18 +248,15 @@ function xhprof_get_children_table($raw_data)
 /**
  * Generate DOT script from the given raw phprof data.
  *
- * @param    raw_data, phprof profile data.
- * @param    threshold, float, the threshold value [0,1). The functions in the
- *                   raw_data whose exclusive wall times ratio are below the
- *                   threshold will be filtered out and won't apprear in the
- *                   generated image.
- * @param    page, string(optional), the root node name. This can be used to
- *              replace the 'main()' as the root node.
- * @param    func, string, the focus function.
- * @param    critical_path, bool, whether or not to display critical path with
- *                             bold lines.
- * @returns, string, the DOT script to generate image.
- *
+ * @param      $raw_data
+ * @param      $threshold
+ * @param      $source
+ * @param      $page
+ * @param      $func
+ * @param      $critical_path
+ * @param null $right
+ * @param null $left
+ * @return string
  * @author cjiang
  */
 function xhprof_generate_dot_script(
@@ -532,19 +539,15 @@ function xhprof_render_diff_image(
 /**
  * Generate image content from phprof run id.
  *
- * @param    object                                                         $xhprof_runs_impl An object that implements
+ * @param object $xhprof_runs_impl                                                            An object that implements
  *                                                                                            the iXHProfRuns interface
- * @param    run_id, integer, the unique id for the phprof run, this is the
- *                primary key for phprof database table.
- * @param    type, string, one of the supported image types. See also
- *              $xhprof_legal_image_types.
- * @param    threshold, float, the threshold value [0,1). The functions in the
- *                   raw_data whose exclusive wall times ratio are below the
- *                   threshold will be filtered out and won't apprear in the
- *                   generated image.
- * @param    func, string, the focus function.
- * @returns, string, the DOT script to generate image.
- *
+ * @param        $run_id
+ * @param        $type
+ * @param        $threshold
+ * @param        $func
+ * @param        $source
+ * @param        $critical_path
+ * @return false|string
  * @author cjiang
  */
 function xhprof_get_content_by_run(
@@ -581,18 +584,14 @@ function xhprof_get_content_by_run(
 /**
  * Generate image from phprof run id and send it to client.
  *
- * @param  object                                                           $xhprof_runs_impl An object that implements
+ * @param object $xhprof_runs_impl                                                            An object that implements
  *                                                                                            the iXHProfRuns interface
- * @param  run_id, integer, the unique id for the phprof run, this is the
- *                primary key for phprof database table.
- * @param  type, string, one of the supported image types. See also
- *              $xhprof_legal_image_types.
- * @param  threshold, float, the threshold value [0,1). The functions in the
- *                   raw_data whose exclusive wall times ratio are below the
- *                   threshold will be filtered out and won't apprear in the
- *                   generated image.
- * @param  func, string, the focus function.
- * @param  bool, does this run correspond to a PHProfLive run or a dev run?
+ * @param        $run_id
+ * @param        $type
+ * @param        $threshold
+ * @param        $func
+ * @param        $source
+ * @param        $critical_path
  * @author cjiang
  */
 function xhprof_render_image(
